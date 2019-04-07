@@ -10,11 +10,6 @@ export default class GlobalHeaderRight extends PureComponent {
     const { currentUser, onMenuClick, theme } = this.props;
     const menu = (
       <Menu className={styles.menu} selectedKeys={[]} onClick={onMenuClick}>
-        <Menu.Item key="userCenter">
-          <Icon type="user" />
-          <FormattedMessage id="menu.account.center" defaultMessage="account center" />
-        </Menu.Item>
-        <Menu.Divider />
         <Menu.Item key="logout">
           <Icon type="logout" />
           <FormattedMessage id="menu.account.logout" defaultMessage="logout" />

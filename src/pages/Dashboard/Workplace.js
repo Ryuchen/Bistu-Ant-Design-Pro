@@ -22,13 +22,6 @@ class Workplace extends PureComponent {
     });
   }
 
-  componentWillUnmount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'chart/clear',
-    });
-  }
-
   render() {
     const {
       currentUser,
@@ -37,7 +30,7 @@ class Workplace extends PureComponent {
     } = this.props;
 
     const pageHeaderContent =
-      currentUser && Object.keys(currentUser).length ? (
+      currentUser ? (
         <div className={styles.pageHeaderContent}>
           <div className={styles.avatar}>
             <Avatar size="large" src={currentUser.avatar} />

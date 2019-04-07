@@ -162,7 +162,7 @@ export default [
         name: 'settings',
         path: '/account/',
         component: './Account/Settings/Info',
-        authority: ['admin', 'staff', 'teacher'],
+        authority: ['staff', 'teacher'],
         routes: [
           {
             path: '/account/',
