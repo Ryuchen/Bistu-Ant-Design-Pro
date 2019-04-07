@@ -1,4 +1,5 @@
 import fetch from 'dva/fetch';
+import defaultSettings from './defaultSettings';
 
 export const dva = {
   config: {
@@ -30,15 +31,14 @@ export function patchRoutes(routes) {
 }
 
 export function render(oldRender) {
-  fetch('/api/auth_routes')
-    .then(res => res.json())
-    .then(
-      ret => {
+  if (defaultSettings.runtimeMenu) {
+    fetch('/api/auth_routes')
+      .then(res => res.json())
+      .then(ret => {
         authRoutes = ret;
         oldRender();
-      },
-      () => {
-        oldRender();
-      }
-    );
+      });
+  } else {
+    oldRender();
+  }
 }

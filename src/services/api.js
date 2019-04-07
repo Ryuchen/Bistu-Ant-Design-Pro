@@ -58,14 +58,6 @@ export async function queryTags() {
   return request('/api/tags');
 }
 
-export async function queryBasicProfile(id) {
-  return request(`/api/profile/basic?id=${id}`);
-}
-
-export async function queryAdvancedProfile() {
-  return request('/api/profile/advanced');
-}
-
 export async function queryFakeList(params) {
   return request(`/api/fake_list?${stringify(params)}`);
 }
@@ -103,24 +95,7 @@ export async function updateFakeList(params) {
   });
 }
 
-export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
-    method: 'POST',
-    data: params,
-  });
-}
-
-export async function fakeRegister(params) {
-  return request('/api/register', {
-    method: 'POST',
-    data: params,
-  });
-}
 
 export async function queryNotices(params = {}) {
   return request(`/api/notices?${stringify(params)}`);
-}
-
-export async function getFakeCaptcha(mobile) {
-  return request(`/api/captcha?mobile=${mobile}`);
 }

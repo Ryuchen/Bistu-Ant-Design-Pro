@@ -9,6 +9,7 @@ module.exports = {
   menu: {
     disableLocal: false,
   },
+  runtimeMenu: false,
   title: 'Bistu CMS',
   pwa: true,
   // Your custom iconfont Symbol script Url

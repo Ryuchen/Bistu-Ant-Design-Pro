@@ -18,8 +18,8 @@ export async function AccountLogout() {
   });
 }
 
-export async function CurrentUser(params) {
-  return request(`/api/accounts/current?${stringify(params)}`, {
+export async function CurrentUser() {
+  return request(`/api/accounts/current/`, {
     method: 'GET',
   });
 }

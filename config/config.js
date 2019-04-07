@@ -47,17 +47,6 @@ const plugins = [
   ],
 ];
 
-// 针对 preview.pro.ant.design 的 GA 统计代码
-// 业务上不需要这个
-if (APP_TYPE === 'site') {
-  plugins.push([
-    'umi-plugin-ga',
-    {
-      code: 'UA-72788897-6',
-    },
-  ]);
-}
-
 export default {
   // add for transfer to umi
   plugins,
@@ -75,13 +64,13 @@ export default {
   theme: {
     'primary-color': primaryColor,
   },
-  // proxy: {
-  //   '/api': {
-  //     target: 'http://127.0.0.1:8001/',
-  //     changeOrigin: true,
-  //     pathRewrite: { '^/api': '' },
-  //   },
-  // },
+  proxy: {
+    '/api': {
+      target: 'http://127.0.0.1:8001/',
+      changeOrigin: true,
+      pathRewrite: { '^/api': '' },
+    },
+  },
   ignoreMomentLocale: true,
   lessLoaderOptions: {
     javascriptEnabled: true,

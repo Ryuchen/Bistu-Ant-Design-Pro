@@ -506,6 +506,15 @@ function fakeQueryTeacherFunction(id) {
 }
 
 export default {
+  'GET /api/accounts/auth_routes/': (req, res) => {
+    res.send({
+      data: {
+        status: '200',
+        code: '00000000',
+      },
+    });
+  },
+
   'POST /api/accounts/login/': (req, res) => {
     const { password, username, type } = req.body;
     const account = fakeLoginFunction(password, username);

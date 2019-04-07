@@ -4,13 +4,14 @@ export default [
     path: '/user',
     component: '../layouts/UserLayout',
     routes: [
-      { path: '/user', redirect: '/user/login' },
-      { path: '/user/login', name: 'login', component: './User/Login' },
-      { path: '/user/register', name: 'register', component: './User/Register' },
       {
-        path: '/user/register-result',
-        name: 'register.result',
-        component: './User/RegisterResult',
+        path: '/user',
+        redirect: '/user/login'
+      },
+      {
+        path: '/user/login',
+        name: 'login',
+        component: './User/Login'
       },
       {
         component: '404',
@@ -22,12 +23,14 @@ export default [
     path: '/',
     component: '../layouts/BasicLayout',
     Routes: ['src/pages/Authorized'],
+    authority: ['admin', 'staff', 'teacher'],
     routes: [
       // dashboard
       {
         path: '/',
         name: 'workplace',
         component: './Dashboard/Workplace',
+        authority: ['admin', 'staff', 'teacher'],
         hideInMenu: true,
       },
       // 学院的详细信息
@@ -35,29 +38,34 @@ export default [
         path: '/colleges/:uuid',
         name: 'academyProfile',
         component: './Profile/AcademyProfile',
+        authority: ['admin', 'staff', 'teacher'],
         hideInMenu: true,
       },
       // list
       {
         path: '/studentList',
         name: 'studentTable',
+        authority: ['admin', 'staff', 'teacher'],
         component: './List/StudentList',
       },
       // 学生的详细信息
       {
         path: '/students/:id',
         name: 'studentsProfile',
+        authority: ['admin', 'staff', 'teacher'],
         component: './Profile/StudentProfile',
         hideInMenu: true,
       },
       {
         path: '/tutorList',
         name: 'tutorTable',
+        authority: ['admin', 'staff', 'teacher'],
         component: './List/TutorList',
       },
       {
         path: '/teachers/:id',
         name: 'teachersProfile',
+        authority: ['admin', 'staff', 'teacher'],
         component: './Profile/TeacherProfile',
         hideInMenu: true,
       },
@@ -154,6 +162,7 @@ export default [
         name: 'settings',
         path: '/account/',
         component: './Account/Settings/Info',
+        authority: ['admin', 'staff', 'teacher'],
         routes: [
           {
             path: '/account/',
@@ -232,30 +241,7 @@ export default [
       //       ],
       //     },
       //   ],
-      // },
-      //  editor
-      // {
-      //   name: 'editor',
-      //   icon: 'highlight',
-      //   path: '/editor',
-      //   routes: [
-      //     {
-      //       path: '/editor/flow',
-      //       name: 'flow',
-      //       component: './Editor/GGEditor/Flow',
-      //     },
-      //     {
-      //       path: '/editor/mind',
-      //       name: 'mind',
-      //       component: './Editor/GGEditor/Mind',
-      //     },
-      //     {
-      //       path: '/editor/koni',
-      //       name: 'koni',
-      //       component: './Editor/GGEditor/Koni',
-      //     },
-      //   ],
-      // },
+      // }
       {
         component: '404',
       },

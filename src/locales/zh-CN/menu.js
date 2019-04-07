@@ -17,6 +17,7 @@ export default {
   'menu.academyProfile': '学院详情',
   'menu.teachersProfile': '教师详情',
   'menu.studentsProfile': '学生详情',
+  'menu.settings': '个人中心',
   'menu.profile': '详情页',
   'menu.profile.basic': '基础详情页',
   'menu.profile.advanced': '高级详情页',
