@@ -6,9 +6,10 @@ import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Greeting from '@/components/Greeting';
 import styles from './Workplace.less';
 
-@connect(({ user, colleges, loading }) => ({
+@connect(({ user, colleges, students, loading }) => ({
   currentUser: user.currentUser,
   colleges,
+  students,
   currentUserLoading: loading.effects['user/fetchCurrent'],
 }))
 class Workplace extends PureComponent {
@@ -20,13 +21,20 @@ class Workplace extends PureComponent {
     dispatch({
       type: 'colleges/fetchAcademies',
     });
+    dispatch({
+      type: 'colleges/fetchMajors',
+    });
+    dispatch({
+      type: 'students/fetchStudents',
+    });
   }
 
   render() {
     const {
       currentUser,
       currentUserLoading,
-      colleges: { academies },
+      colleges: { academies= [], majors = [] },
+      students: { students }
     } = this.props;
 
     const pageHeaderContent =
@@ -46,8 +54,31 @@ class Workplace extends PureComponent {
         </div>
       ) : null;
 
+    const extraContent = (
+      <div className={styles.extraContent}>
+        <div className={styles.statItem}>
+          <p>学院数量</p>
+          <p>{academies.length}</p>
+        </div>
+        <div className={styles.statItem}>
+          <p>研究点数量</p>
+          <p>{majors.length}</p>
+        </div>
+        <div className={styles.statItem}>
+          <p>研究生数量</p>
+          <p>{students.length}</p>
+        </div>
+      </div>
+    );
+
     return (
-      <PageHeaderWrapper loading={currentUserLoading} content={pageHeaderContent}>
+      <PageHeaderWrapper
+        title='北京信息科技大学'
+        oading={currentUserLoading}
+        content={pageHeaderContent}
+        extraContent={extraContent}
+        type='success'
+      >
         <Row gutter={24}>
           <Col xl={24} lg={24} md={24} sm={24} xs={24}>
             <Card

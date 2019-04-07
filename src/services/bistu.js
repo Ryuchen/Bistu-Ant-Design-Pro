@@ -36,8 +36,25 @@ export async function queryAcademyProfile(uuid) {
   });
 }
 
+export async function queryMajors() {
+  return request('/api/colleges/majors/', {
+    method: 'GET',
+  });
+}
+
+export async function queryMajorProfile(uuid) {
+  return request(`/api/colleges/major/${uuid}`, {
+    method: 'GET',
+  });
+}
+
 export async function queryStudents(params) {
-  return request(`/api/students/students?${stringify(params)}`, {
+  if (params) {
+    return request(`/api/students/students?${stringify(params)}`, {
+      method: 'GET',
+    });
+  }
+  return request(`/api/students/students/`, {
     method: 'GET',
   });
 }
@@ -49,7 +66,12 @@ export async function queryStudentProfile(uuid) {
 }
 
 export async function queryTeachers(params) {
-  return request(`/api/teachers/teachers?${stringify(params)}`, {
+  if (params) {
+    return request(`/api/teachers/teachers?${stringify(params)}`, {
+      method: 'GET',
+    });
+  }
+  return request(`/api/teachers/teachers/`, {
     method: 'GET',
   });
 }

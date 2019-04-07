@@ -29,13 +29,13 @@ export default {
     saveStudent(state, action) {
       return {
         ...state,
-        student: action.payload.data.student || {},
+        student: action.payload.data || {},
       };
     },
     saveStudents(state, action) {
       return {
         ...state,
-        students: action.payload.data.students || [],
+        students: action.payload.data || [],
       };
     },
   },

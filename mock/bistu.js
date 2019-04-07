@@ -505,6 +505,8 @@ function fakeQueryTeacherFunction(id) {
   return teacher;
 }
 
+console.log(mockStudentsList.pop());
+
 export default {
   'GET /api/accounts/auth_routes/': (req, res) => {
     res.send({

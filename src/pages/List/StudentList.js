@@ -53,19 +53,19 @@ class TableList extends PureComponent {
     {
       title: '学号',
       dataIndex: 'stu_number',
+      key: 'stu_number',
       fixed: 'left',
-      width: 100,
+      width: 190,
       sorter: true,
       render: val => `${val}`,
     },
     {
       title: '学生姓名',
-      dataIndex: 'user.id',
-      key: 'user.id',
+      dataIndex: 'user.username',
       fixed: 'left',
       width: 100,
       render: (val, record) => (
-        <a onClick={() => this.previewItem(record.user.id)}>
+        <a onClick={() => this.previewItem(record.uuid)}>
           {record.user.first_name}
           {record.user.last_name}
         </a>
@@ -207,7 +207,7 @@ class TableList extends PureComponent {
       title: '操作',
       fixed: 'right',
       width: 60,
-      render: (val, record) => <a onClick={() => this.previewItem(record.user.id)}>详情</a>,
+      render: (val, record) => <a onClick={() => this.previewItem(record.uuid)}>详情</a>,
     },
   ];
 
@@ -263,7 +263,7 @@ class TableList extends PureComponent {
           const obj = {};
           this.studentColumns.forEach(column => {
             if (column.dataIndex) {
-              if (column.dataIndex === 'user.id') {
+              if (column.dataIndex === 'user.username') {
                 obj[column.title] = row.user.first_name + row.user.last_name;
               } else {
                 obj[column.title] = row[column.dataIndex];
