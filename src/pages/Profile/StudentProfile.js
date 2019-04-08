@@ -26,7 +26,8 @@ class StudentProfile extends Component {
     const {
       students: { student },
     } = this.props;
-    const { user = {}, tutor = {}, academy = {}, major = {} } = student;
+
+    const { user = {}, tutor = {}, academy = {}, major = {}, research = {} } = student;
     const { user: teacher = {}, academy: teacherAcademy = {} } = tutor;
 
     return (
@@ -50,7 +51,7 @@ class StudentProfile extends Component {
                 <Divider type="vertical" style={{ margin: 32 }} />
                 <span>{major.maj_name}</span>
                 <Divider type="vertical" style={{ margin: 32 }} />
-                <span>{student.research}</span>
+                <span>{research.res_name}</span>
               </div>
             </div>
             <Divider dashed />
@@ -116,7 +117,7 @@ class StudentProfile extends Component {
           <Divider style={{ marginBottom: 32 }} />
           <DescriptionList size="large" title="导师信息" style={{ marginBottom: 32 }}>
             <Description term="姓名">
-              <Link to={`/teachers/${teacher.uuid}`}>
+              <Link to={`/teachers/${tutor.uuid}`}>
                 {teacher.first_name}
                 {teacher.last_name}
               </Link>
@@ -132,7 +133,7 @@ class StudentProfile extends Component {
               <Link to={`../colleges/${academy.uuid}`}>{academy.aca_cname}</Link>
             </Description>
             <Description term="专业名称">{major.maj_code}</Description>
-            <Description term="研究方向">{student.research}</Description>
+            <Description term="研究方向">{research.res_name}</Description>
             <Description term="学科类型">{major.maj_type}</Description>
             <Description term="学位类型">{major.maj_degree}</Description>
           </DescriptionList>

@@ -354,7 +354,7 @@ class TableList extends PureComponent {
                 <Select placeholder="请选择" style={{ width: '100%' }}>
                   {teachers.map(item => {
                     return (
-                      <Option value={item.user.id}>
+                      <Option value={item.uuid}>
                         {`${item.user.first_name}${item.user.last_name}`}
                       </Option>
                     );

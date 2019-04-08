@@ -48,7 +48,7 @@ class TableList extends PureComponent {
       fixed: 'left',
       width: 100,
       render: (val, record) => (
-        <a onClick={() => this.previewItem(record.user.id)}>
+        <a onClick={() => this.previewItem(record.uuid)}>
           {record.user.first_name}
           {record.user.last_name}
         </a>
@@ -144,7 +144,7 @@ class TableList extends PureComponent {
       title: '操作',
       fixed: 'right',
       width: 60,
-      render: (val, record) => <a onClick={() => this.previewItem(record.user.id)}>详情</a>,
+      render: (val, record) => <a onClick={() => this.previewItem(record.uuid)}>详情</a>,
     },
   ];
 

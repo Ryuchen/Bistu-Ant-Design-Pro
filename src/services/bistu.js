@@ -50,7 +50,7 @@ export async function queryMajorProfile(uuid) {
 
 export async function queryStudents(params) {
   if (params) {
-    return request(`/api/students/students?${stringify(params)}`, {
+    return request(`/api/students/students/?${stringify(params)}`, {
       method: 'GET',
     });
   }

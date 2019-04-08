@@ -137,9 +137,9 @@ const SchoolsName = [
 // Mock basic User model
 const adminUser = {
   id: mockjs.Random.guid(),
-  username: 'admin',
-  password: 'ant.design',
   first_name: mockjs.Random.cfirst(),
+  password: 'ant.design',
+  username: 'admin',
   last_name: mockjs.Random.clast(),
   email: mockjs.Random.email(),
   last_login: mockjs.Random.datetime(),
@@ -511,8 +511,8 @@ export default {
   'GET /api/accounts/auth_routes/': (req, res) => {
     res.send({
       data: {
-        status: '200',
         code: '00000000',
+        status: '200',
       },
     });
   },
@@ -530,8 +530,8 @@ export default {
       res.send({
         data: {
           code: '00000000',
-          status: '200',
           currentAuthority: Authority,
+          status: '200',
         },
         type,
       });
@@ -539,14 +539,14 @@ export default {
       res.status(401);
       res.send({
         data: {
-          status: '401',
           currentAuthority: 'guest',
+          status: '401',
         },
         meta: {
-          message: 'Forbidden',
-          details: 'Username or Password is incorrect.',
-          retryable: true,
           code: '401',
+          details: 'Username or Password is incorrect.',
+          message: 'Forbidden',
+          retryable: true,
         },
         type,
       });
