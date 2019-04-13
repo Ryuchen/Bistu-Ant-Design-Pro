@@ -6,7 +6,7 @@ export default {
   state: {
     student: {},
     students: {},
-    statistics: []
+    statistics: [],
   },
 
   effects: {
@@ -37,19 +37,19 @@ export default {
     saveStudent(state, action) {
       return {
         ...state,
-        student: action.payload.data || {},
+        student: action.payload || {},
       };
     },
     saveStudents(state, action) {
       return {
         ...state,
-        students: action.payload || {}
+        students: action.payload || {},
       };
     },
     saveStatistics(state, action) {
       return {
         ...state,
-        statistics: action.payload.data || []
+        statistics: action.payload || [],
       };
     },
   },

@@ -325,6 +325,8 @@ class TableList extends PureComponent {
 
     const { selectedRows } = this.state;
 
+    const { results = [], count } = teachers;
+
     return (
       <PageHeaderWrapper title="教师列表">
         <Card bordered={false}>
@@ -332,13 +334,13 @@ class TableList extends PureComponent {
             <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
             <StandardTable
               columns={this.teacherColumns}
-              rowKey={record => record.user.id}
-              dataSource={teachers}
+              rowKey={record => record.uuid}
+              dataSource={results}
               selectedRows={selectedRows}
               scroll={{ x: 2000, y: 900 }}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
-              total={teachers.length}
+              total={count}
               pagination={{ defaultPageSize: 20 }}
               loading={teachersLoading}
             />

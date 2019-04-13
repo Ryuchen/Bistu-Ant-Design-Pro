@@ -5,7 +5,7 @@ export default {
 
   state: {
     teacher: {},
-    teachers: [],
+    teachers: {},
   },
 
   effects: {
@@ -29,13 +29,13 @@ export default {
     saveTeacher(state, action) {
       return {
         ...state,
-        teacher: action.payload.data || {},
+        teacher: action.payload || {},
       };
     },
     saveTeachers(state, action) {
       return {
         ...state,
-        teachers: action.payload.data || [],
+        teachers: action.payload || [],
       };
     },
   },

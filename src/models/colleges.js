@@ -1,4 +1,9 @@
-import { queryAcademies, queryAcademyProfile, queryMajors, queryMajorProfile } from '@/services/bistu';
+import {
+  queryAcademies,
+  queryAcademyProfile,
+  queryMajors,
+  queryMajorProfile,
+} from '@/services/bistu';
 
 export default {
   namespace: 'colleges',
@@ -7,7 +12,7 @@ export default {
     academy: {},
     academies: [],
     major: {},
-    majors: []
+    majors: [],
   },
 
   effects: {
@@ -45,25 +50,25 @@ export default {
     saveAcademy(state, action) {
       return {
         ...state,
-        academy: action.payload.data || {},
+        academy: action.payload || {},
       };
     },
     saveAcademies(state, action) {
       return {
         ...state,
-        academies: action.payload.data || [],
+        academies: action.payload || [],
       };
     },
     saveMajor(state, action) {
       return {
         ...state,
-        major: action.payload.data || {},
+        major: action.payload || {},
       };
     },
     saveMajors(state, action) {
       return {
         ...state,
-        majors: action.payload.data || [],
+        majors: action.payload || [],
       };
     },
   },

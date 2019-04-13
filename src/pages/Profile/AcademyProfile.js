@@ -12,8 +12,8 @@ const CultivatingMode = ['学硕', '专硕'];
 const GenderChoice = ['男', '女'];
 const StudentCategory = ['全日制', '非全日制'];
 const EnrollmentCategory = ['定向', '非定向'];
-const PoliticalChoice = ['党员', '团员', '群众', '民主党派'];
-const TeacherTitle = ['讲师', '副教授', '教授', '副研究员', '研究员', '助教'];
+// const PoliticalChoice = ['党员', '团员', '群众', '民主党派'];
+// const TeacherTitle = ['讲师', '副教授', '教授', '副研究员', '研究员', '助教'];
 
 @connect(({ colleges, students, teachers, loading }) => ({
   colleges,
@@ -58,7 +58,8 @@ class AcademyProfile extends Component {
       teachersLoading,
     } = this.props;
 
-    const { count, results= [] } = students;
+    const { count: stuCount, results: stuResults = [] } = students;
+    const { count: tutCount, results: tutResults = [] } = teachers;
     const { aca_user: acaUser = {} } = academy;
 
     const studentColumns = [
@@ -237,16 +238,12 @@ class AcademyProfile extends Component {
       {
         title: '一级学科',
         dataIndex: 'maj_first',
-        render: value => (
-          <Badge status={(value ? "success" : "error")} style={{ marginLeft: 5 }} />
-        ),
+        render: value => <Badge status={value ? 'success' : 'error'} style={{ marginLeft: 5 }} />,
       },
       {
         title: '二级学科',
         dataIndex: 'maj_second',
-        render: value => (
-          <Badge status={(value ? "success" : "error")} style={{ marginLeft: 5 }} />
-        ),
+        render: value => <Badge status={value ? 'success' : 'error'} style={{ marginLeft: 5 }} />,
       },
     ];
 
@@ -272,15 +269,6 @@ class AcademyProfile extends Component {
             <Description term="最近一次登录">{acaUser.last_login}</Description>
           </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />
-          <div className={styles.title}>教师列表</div>
-          <Table
-            style={{ marginBottom: 24 }}
-            rowKey={record => record.user.id}
-            columns={teacherColumns}
-            dataSource={teachers}
-            pagination={false}
-            loading={teachersLoading}
-          />
           <div className={styles.title}>专业列表</div>
           <Table
             style={{ marginBottom: 24 }}
@@ -290,13 +278,22 @@ class AcademyProfile extends Component {
             pagination={false}
             loading={majorsLoading}
           />
-          <div className={styles.title}>学生列表({count})</div>
+          <div className={styles.title}>教师列表 ({tutCount})</div>
           <Table
             style={{ marginBottom: 24 }}
-            rowKey={record => record.user.id}
+            rowKey={record => record.uuid}
+            columns={teacherColumns}
+            dataSource={tutResults}
+            pagination={false}
+            loading={teachersLoading}
+          />
+          <div className={styles.title}>学生列表 ({stuCount})</div>
+          <Table
+            style={{ marginBottom: 24 }}
+            rowKey={record => record.uuid}
             columns={studentColumns}
-            dataSource={results}
-            pagination={{ pageSize: 10 }}
+            dataSource={stuResults}
+            pagination={{ pageSize: 20, total: stuCount, showSizeChanger: false }}
             loading={studentsLoading}
           />
         </Card>

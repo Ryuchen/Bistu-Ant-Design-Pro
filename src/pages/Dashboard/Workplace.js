@@ -28,8 +28,8 @@ class Workplace extends PureComponent {
       type: 'students/fetchStudents',
       payload: {
         limit: 1,
-        offset: 1
-      }
+        offset: 1,
+      },
     });
     dispatch({
       type: 'students/fetchStatistics',
@@ -41,25 +41,24 @@ class Workplace extends PureComponent {
       currentUser,
       currentUserLoading,
       colleges: { academies = [], majors = [] },
-      students: { students = [], statistics = [] }
+      students: { students = {}, statistics = [] },
     } = this.props;
 
-    const pageHeaderContent =
-      currentUser ? (
-        <div className={styles.pageHeaderContent}>
-          <div className={styles.avatar}>
-            <Avatar size="large" src={currentUser.avatar} />
+    const pageHeaderContent = currentUser ? (
+      <div className={styles.pageHeaderContent}>
+        <div className={styles.avatar}>
+          <Avatar size="large" src={currentUser.avatar} />
+        </div>
+        <div className={styles.content}>
+          <div className={styles.contentTitle}>
+            <Greeting currentUser={currentUser} />
           </div>
-          <div className={styles.content}>
-            <div className={styles.contentTitle}>
-              <Greeting currentUser={currentUser} />
-            </div>
-            <div>
-              {currentUser.title} | {currentUser.group}
-            </div>
+          <div>
+            {currentUser.title} | {currentUser.group}
           </div>
         </div>
-      ) : null;
+      </div>
+    ) : null;
 
     const extraContent = (
       <div className={styles.extraContent}>
@@ -79,15 +78,15 @@ class Workplace extends PureComponent {
     );
 
     const temp = {}; // 当前重复的值,支持多列
-    const mergeCells = (index, text, array, columns) => {
+    const mergeCells = (index, text, array, columnName) => {
       let i = 0;
       if (!Object.prototype.hasOwnProperty.call(temp, text)) {
-        array.forEach((item) => {
-          if (item[columns] === text) {
+        array.forEach(item => {
+          if (item[columnName] === text) {
             i += 1;
           }
         });
-        temp[text] = {index, i};
+        temp[text] = { index, i };
         return i;
       }
       const { index: displayIndex, i: displaySpan } = temp[text];
@@ -96,7 +95,6 @@ class Workplace extends PureComponent {
       }
       return i;
     };
-
 
     const columns = [
       {
@@ -109,9 +107,9 @@ class Workplace extends PureComponent {
             children: text,
             props: {},
           };
-          obj.props.rowSpan = mergeCells(index, record.name, statistics, "name");
+          obj.props.rowSpan = mergeCells(index, record.name, statistics, 'name');
           return obj;
-        }
+        },
       },
       {
         title: '招生专业代码',
@@ -169,7 +167,7 @@ class Workplace extends PureComponent {
                     dataIndex: '3',
                     width: 120,
                     align: 'center',
-                  }
+                  },
                 ],
               },
               {
@@ -204,9 +202,9 @@ class Workplace extends PureComponent {
                     dataIndex: '7',
                     width: 120,
                     align: 'center',
-                  }
+                  },
                 ],
-              }
+              },
             ],
           },
           {
@@ -238,11 +236,11 @@ class Workplace extends PureComponent {
                     dataIndex: '10',
                     width: 120,
                     align: 'center',
-                  }
+                  },
                 ],
-              }
+              },
             ],
-          }
+          },
         ],
       },
       {
@@ -256,19 +254,19 @@ class Workplace extends PureComponent {
             children: text,
             props: {},
           };
-          obj.props.rowSpan = mergeCells(index, record.name, statistics, "name");
+          obj.props.rowSpan = mergeCells(index, record.name, statistics, 'name');
           return obj;
-        }
-      }
+        },
+      },
     ];
 
     return (
       <PageHeaderWrapper
-        title='北京信息科技大学'
+        title="北京信息科技大学"
         oading={currentUserLoading}
         content={pageHeaderContent}
         extraContent={extraContent}
-        type='success'
+        type="success"
       >
         <Row gutter={24}>
           <Col xl={24} lg={24} md={24} sm={24} xs={24}>

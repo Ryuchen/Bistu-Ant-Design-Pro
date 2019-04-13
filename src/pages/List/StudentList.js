@@ -3,18 +3,7 @@ import moment from 'moment';
 import ExportJsonExcel from 'js-export-excel';
 import { connect } from 'dva';
 import router from 'umi/router';
-import {
-  Row,
-  Col,
-  Card,
-  Form,
-  Input,
-  Select,
-  Button,
-  Upload,
-  message,
-  notification,
-} from 'antd';
+import { Row, Col, Card, Form, Input, Select, Button, Upload, message, notification } from 'antd';
 
 import StandardTable from '@/components/StandardTable';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
@@ -74,6 +63,9 @@ class TableList extends PureComponent {
 
     dispatch({
       type: 'teachers/fetchTeachers',
+      payload: {
+        limit: 100,
+      },
     });
   }
 
@@ -108,7 +100,7 @@ class TableList extends PureComponent {
     router.push(`/students/${id}`);
   };
 
-  handleExportClick = (studentColumns) => {
+  handleExportClick = studentColumns => {
     const { selectedRows } = this.state;
     const option = {};
     const exportData = [];
@@ -170,7 +162,9 @@ class TableList extends PureComponent {
     const { dispatch, form } = this.props;
 
     form.validateFields((err, fieldsValue) => {
-      if (err) return;
+      if (err) {
+        return;
+      }
 
       const values = {
         ...fieldsValue,
@@ -190,11 +184,13 @@ class TableList extends PureComponent {
   renderSimpleForm() {
     const {
       form: { getFieldDecorator },
-      colleges: { academies },
-      teachers: { teachers },
+      colleges: { academies = [] },
+      teachers: { teachers = {} },
     } = this.props;
 
     const { selectedRows } = this.state;
+
+    const { results = [] } = teachers;
 
     const props = {
       name: 'file',
@@ -220,20 +216,16 @@ class TableList extends PureComponent {
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={4}>
-            <FormItem label="学生编号">
-              {getFieldDecorator('stu_number')(<Input placeholder="请输入" />)}
+            <FormItem label="学生姓名">
+              {getFieldDecorator('stu_name')(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={4}>
             <FormItem label="指导老师">
               {getFieldDecorator('tutor')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
-                  {teachers.map(item => {
-                    return (
-                      <Option value={item.uuid}>
-                        {`${item.user.first_name}${item.user.last_name}`}
-                      </Option>
-                    );
+                  {results.map(item => {
+                    return <Option value={item.uuid}>{`${item.tut_name}`}</Option>;
                   })}
                 </Select>
               )}
@@ -286,14 +278,14 @@ class TableList extends PureComponent {
       studentsLoading,
     } = this.props;
 
-    const { count, results= [] } = students;
+    const { count, results = [] } = students;
 
     const { selectedRows } = this.state;
 
     const paginationProps = {
       pageSize: 20,
       total: count,
-      showSizeChanger: false
+      showSizeChanger: false,
     };
 
     let nation = [];
@@ -335,10 +327,7 @@ class TableList extends PureComponent {
         dataIndex: 'stu_gender',
         key: 'stu_gender',
         width: 90,
-        filters: [
-          { text: GenderChoice[0], value: 'G1' },
-          { text: GenderChoice[1], value: 'G2' },
-        ],
+        filters: [{ text: GenderChoice[0], value: 'G1' }, { text: GenderChoice[1], value: 'G2' }],
         onFilter: (value, record) => record.stu_gender === value,
         render: val => `${val}`,
       },
@@ -347,7 +336,9 @@ class TableList extends PureComponent {
         dataIndex: 'stu_nation',
         key: 'stu_nation',
         width: 120,
-        filters: nation.map(item => {return { text: item, value: item}}),
+        filters: nation.map(item => {
+          return { text: item, value: item };
+        }),
         onFilter: (value, record) => record.stu_nation === value,
         render: val => `${val}`,
       },
@@ -356,7 +347,9 @@ class TableList extends PureComponent {
         dataIndex: 'stu_source',
         key: 'stu_source',
         width: 160,
-        filters: source.map(item => {return { text: item, value: item}}),
+        filters: source.map(item => {
+          return { text: item, value: item };
+        }),
         onFilter: (value, record) => record.stu_source === value,
         render: val => `${val}`,
       },
@@ -366,10 +359,10 @@ class TableList extends PureComponent {
         key: 'stu_political',
         width: 160,
         filters: [
-          { text: PoliticalChoice[0], value: "P1" },
-          { text: PoliticalChoice[1], value: "P2" },
-          { text: PoliticalChoice[2], value: "P3" },
-          { text: PoliticalChoice[3], value: "P4" },
+          { text: PoliticalChoice[0], value: 'P1' },
+          { text: PoliticalChoice[1], value: 'P2' },
+          { text: PoliticalChoice[2], value: 'P3' },
+          { text: PoliticalChoice[3], value: 'P4' },
         ],
         onFilter: (value, record) => record.stu_political === value,
         render: val => `${val}`,
@@ -380,11 +373,11 @@ class TableList extends PureComponent {
         key: 'stu_type',
         width: 160,
         filters: [
-          { text: StudentType[0], value: "S1" },
-          { text: StudentType[1], value: "S2" },
-          { text: StudentType[2], value: "S3" },
-          { text: StudentType[3], value: "S4" },
-          { text: StudentType[4], value: "S5" },
+          { text: StudentType[0], value: 'S1' },
+          { text: StudentType[1], value: 'S2' },
+          { text: StudentType[2], value: 'S3' },
+          { text: StudentType[3], value: 'S4' },
+          { text: StudentType[4], value: 'S5' },
         ],
         onFilter: (value, record) => record.stu_type === value,
         render: val => `${val}`,
@@ -467,14 +460,18 @@ class TableList extends PureComponent {
         title: '入学时间',
         dataIndex: 'stu_entrance_time',
         key: 'stu_entrance_time',
-        sorter: (a, b) => moment(a.stu_entrance_time, 'YYYY-MM-DD').toDate() - moment(b.stu_entrance_time, 'YYYY-MM-DD').toDate(),
+        sorter: (a, b) =>
+          moment(a.stu_entrance_time, 'YYYY-MM-DD').toDate() -
+          moment(b.stu_entrance_time, 'YYYY-MM-DD').toDate(),
         render: val => `${val}`,
       },
       {
         title: '毕业时间',
         dataIndex: 'stu_graduation_time',
         key: 'stu_graduation_time',
-        sorter: (a, b) => moment(a.stu_graduation_time, 'YYYY-MM-DD').toDate() - moment(b.stu_graduation_time, 'YYYY-MM-DD').toDate(),
+        sorter: (a, b) =>
+          moment(a.stu_graduation_time, 'YYYY-MM-DD').toDate() -
+          moment(b.stu_graduation_time, 'YYYY-MM-DD').toDate(),
         render: val => `${val}`,
       },
       {
