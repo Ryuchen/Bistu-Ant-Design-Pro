@@ -68,7 +68,7 @@ class TableList extends PureComponent {
     {
       title: '职称',
       dataIndex: 'tut_title',
-      width: 160,
+      width: 120,
       filters: [
         { text: TeacherTitle[0], value: TeacherTitle[0] },
         { text: TeacherTitle[1], value: TeacherTitle[1] },
@@ -83,7 +83,7 @@ class TableList extends PureComponent {
     {
       title: '政治面貌',
       dataIndex: 'tut_political',
-      width: 160,
+      width: 120,
       filters: [
         { text: PoliticalChoice[0], value: PoliticalChoice[0] },
         { text: PoliticalChoice[1], value: PoliticalChoice[1] },
@@ -97,46 +97,43 @@ class TableList extends PureComponent {
       title: '所属学院',
       dataIndex: 'academy',
       width: 190,
-      sorter: true,
       render: val => <a onClick={() => router.push(`/colleges/${val.uuid}`)}>{val.aca_cname}</a>,
-    },
-    {
-      title: '研究方向',
-      dataIndex: 'research',
-      width: 190,
-      sorter: true,
-      render: val => `${val}`,
     },
     {
       title: '教师邮箱',
       dataIndex: 'user.email',
       width: 230,
-      sorter: true,
       render: val => `${val}`,
     },
     {
       title: '教师电话',
       dataIndex: 'tut_telephone',
-      width: 190,
-      sorter: true,
+      width: 170,
       render: val => `${val}`,
     },
     {
       title: '最高学历',
       dataIndex: 'tut_degree',
-      sorter: true,
       width: 120,
+      render: val => `${val}`,
+    },
+    {
+      title: '毕业院校',
+      width: 220,
+      dataIndex: 'education.edu_school_name',
       render: val => `${val}`,
     },
     {
       title: '出生日期',
       dataIndex: 'tut_birth_day',
+      width: 160,
       sorter: true,
       render: val => `${val}`,
     },
     {
       title: '入职日期',
       dataIndex: 'tut_entry_day',
+      width: 160,
       sorter: true,
       render: val => `${val}`,
     },
@@ -170,7 +167,7 @@ class TableList extends PureComponent {
     }, {});
 
     const params = {
-      currentPage: pagination.current,
+      currentPage: (pagination.current - 1) * 20,
       pageSize: pagination.pageSize,
       ...formValues,
       ...filters,

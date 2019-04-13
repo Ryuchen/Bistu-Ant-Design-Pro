@@ -36,7 +36,7 @@ class StudentProfile extends Component {
           <div>
             <div className={styles.avatarHolder}>
               {student.stu_avatar ? (
-                <img alt="" src={student.stu_avatar} />
+                <img alt="" src={`${student.stu_avatar}`} />
               ) : (
                 <img
                   alt=""

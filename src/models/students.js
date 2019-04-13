@@ -1,4 +1,4 @@
-import { queryStudents, queryStudentProfile } from '@/services/bistu';
+import { queryStudents, queryStudentProfile, queryStudentStatistics } from '@/services/bistu';
 
 export default {
   namespace: 'students',
@@ -6,6 +6,7 @@ export default {
   state: {
     student: {},
     students: {},
+    statistics: []
   },
 
   effects: {
@@ -23,6 +24,13 @@ export default {
         payload: response,
       });
     },
+    *fetchStatistics({ payload }, { call, put }) {
+      const response = yield call(queryStudentStatistics, payload);
+      yield put({
+        type: 'saveStatistics',
+        payload: response,
+      });
+    },
   },
 
   reducers: {
@@ -36,6 +44,12 @@ export default {
       return {
         ...state,
         students: action.payload || {}
+      };
+    },
+    saveStatistics(state, action) {
+      return {
+        ...state,
+        statistics: action.payload.data || []
       };
     },
   },

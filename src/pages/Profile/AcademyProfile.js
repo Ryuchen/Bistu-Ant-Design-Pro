@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Table, Divider } from 'antd';
+import { Card, Table, Divider, Badge } from 'antd';
 import DescriptionList from '@/components/DescriptionList';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import router from 'umi/router';
@@ -58,51 +58,13 @@ class AcademyProfile extends Component {
       teachersLoading,
     } = this.props;
 
+    const { count, results= [] } = students;
     const { aca_user: acaUser = {} } = academy;
-
-    const majorColumns = [
-      {
-        title: '学科专业编号',
-        dataIndex: 'maj_code',
-        render: val => `${val}`,
-      },
-      {
-        title: '专业方向名称',
-        dataIndex: 'maj_name',
-        render: val => `${val}`,
-      },
-      {
-        title: '类型',
-        dataIndex: 'maj_type',
-        render: val => `${val}`,
-      },
-      {
-        title: '开设时间',
-        dataIndex: 'maj_setup_time',
-        render: val => `${val}`,
-      },
-      {
-        title: '学位类型',
-        dataIndex: 'maj_degree',
-        render: val => `${val}`,
-      },
-      {
-        title: '一级学科',
-        dataIndex: 'maj_first',
-        render: value => (value ? `是` : `否`),
-      },
-      {
-        title: '二级学科',
-        dataIndex: 'maj_second',
-        render: value => (value ? `是` : `否`),
-      },
-    ];
 
     const studentColumns = [
       {
         title: '学号',
         dataIndex: 'stu_number',
-        sorter: true,
         render: val => `${val}`,
       },
       {
@@ -110,7 +72,7 @@ class AcademyProfile extends Component {
         dataIndex: 'user.id',
         key: 'user.id',
         render: (val, record) => (
-          <a onClick={() => router.push(`/students/${record.user.id}`)}>
+          <a onClick={() => router.push(`/students/${record.uuid}`)}>
             {record.user.first_name}
             {record.user.last_name}
           </a>
@@ -182,13 +144,11 @@ class AcademyProfile extends Component {
       {
         title: '入学时间',
         dataIndex: 'stu_entrance_time',
-        sorter: true,
         render: val => `${val}`,
       },
       {
         title: '毕业时间',
         dataIndex: 'stu_graduation_time',
-        sorter: true,
         render: val => `${val}`,
       },
     ];
@@ -197,7 +157,6 @@ class AcademyProfile extends Component {
       {
         title: '教师编号',
         dataIndex: 'tut_number',
-        sorter: true,
         render: val => `${val}`,
       },
       {
@@ -205,7 +164,7 @@ class AcademyProfile extends Component {
         dataIndex: 'user.id',
         key: 'user.id',
         render: (val, record) => (
-          <a onClick={() => router.push(`/teachers/${record.user.id}`)}>
+          <a onClick={() => router.push(`/teachers/${record.uuid}`)}>
             {record.user.first_name}
             {record.user.last_name}
           </a>
@@ -214,63 +173,80 @@ class AcademyProfile extends Component {
       {
         title: '性别',
         dataIndex: 'tut_gender',
-        filters: [
-          { text: GenderChoice[0], value: GenderChoice[0] },
-          { text: GenderChoice[1], value: GenderChoice[1] },
-        ],
-        onFilter: (value, record) => record.stu_gender === value,
-        render: val => `${val}`,
-      },
-      {
-        title: '职称',
-        dataIndex: 'tut_title',
-        filters: [
-          { text: TeacherTitle[0], value: TeacherTitle[0] },
-          { text: TeacherTitle[1], value: TeacherTitle[1] },
-          { text: TeacherTitle[2], value: TeacherTitle[2] },
-          { text: TeacherTitle[3], value: TeacherTitle[3] },
-          { text: TeacherTitle[4], value: TeacherTitle[4] },
-          { text: TeacherTitle[5], value: TeacherTitle[5] },
-        ],
-        onFilter: (value, record) => record.stu_political === value,
         render: val => `${val}`,
       },
       {
         title: '政治面貌',
         dataIndex: 'tut_political',
-        filters: [
-          { text: PoliticalChoice[0], value: PoliticalChoice[0] },
-          { text: PoliticalChoice[1], value: PoliticalChoice[1] },
-          { text: PoliticalChoice[2], value: PoliticalChoice[2] },
-          { text: PoliticalChoice[3], value: PoliticalChoice[3] },
-        ],
-        onFilter: (value, record) => record.stu_political === value,
-        render: val => `${val}`,
-      },
-      {
-        title: '研究方向',
-        dataIndex: 'research',
-        sorter: true,
         render: val => `${val}`,
       },
       {
         title: '教师邮箱',
         dataIndex: 'user.email',
-        sorter: true,
         render: val => `${val}`,
       },
       {
         title: '教师电话',
         dataIndex: 'tut_telephone',
         width: 190,
-        sorter: true,
         render: val => `${val}`,
       },
       {
         title: '入职日期',
         dataIndex: 'tut_entry_day',
-        sorter: true,
         render: val => `${val}`,
+      },
+      {
+        title: '职称',
+        dataIndex: 'tut_title',
+        render: val => `${val}`,
+      },
+      {
+        title: '毕业院校',
+        dataIndex: 'education.edu_school_name',
+        render: val => `${val}`,
+      },
+    ];
+
+    const majorColumns = [
+      {
+        title: '学科专业编号',
+        dataIndex: 'maj_code',
+        render: val => `${val}`,
+      },
+      {
+        title: '专业方向名称',
+        dataIndex: 'maj_name',
+        render: val => `${val}`,
+      },
+      {
+        title: '类型',
+        dataIndex: 'maj_type',
+        render: val => `${val}`,
+      },
+      {
+        title: '开设时间',
+        dataIndex: 'maj_setup_time',
+        render: val => `${val}`,
+      },
+      {
+        title: '学位类型',
+        dataIndex: 'maj_degree',
+        render: val => `${val}`,
+      },
+      {
+        title: '一级学科',
+        dataIndex: 'maj_first',
+        render: value => (
+          <Badge status={(value ? "success" : "error")} style={{ marginLeft: 5 }} />
+        ),
+      },
+      {
+        title: '二级学科',
+        dataIndex: 'maj_second',
+        render: value => (
+          <Badge status={(value ? "success" : "error")} style={{ marginLeft: 5 }} />
+        ),
       },
     ];
 
@@ -314,12 +290,12 @@ class AcademyProfile extends Component {
             pagination={false}
             loading={majorsLoading}
           />
-          <div className={styles.title}>学生列表</div>
+          <div className={styles.title}>学生列表({count})</div>
           <Table
             style={{ marginBottom: 24 }}
             rowKey={record => record.user.id}
             columns={studentColumns}
-            dataSource={students}
+            dataSource={results}
             pagination={{ pageSize: 10 }}
             loading={studentsLoading}
           />

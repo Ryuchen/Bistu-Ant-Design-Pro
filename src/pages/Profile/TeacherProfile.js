@@ -44,6 +44,8 @@ class TeacherProfile extends Component {
       studentsLoading,
     } = this.props;
 
+    const { count, results= [] } = students;
+
     const { user = {}, academy = {} } = teacher;
 
     const studentColumns = [
@@ -179,12 +181,12 @@ class TeacherProfile extends Component {
             <Description term="身份证号">{teacher.tut_cardID}</Description>
           </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />
-          <div className={styles.title}>学生列表</div>
+          <div className={styles.title}>学生列表({count})</div>
           <Table
             style={{ marginBottom: 24 }}
             rowKey={record => record.user.id}
             columns={studentColumns}
-            dataSource={students}
+            dataSource={results}
             pagination={false}
             loading={studentsLoading}
           />

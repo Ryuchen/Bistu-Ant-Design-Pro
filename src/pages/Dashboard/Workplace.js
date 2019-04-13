@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
-import { Row, Col, Card, Avatar } from 'antd';
+import { Row, Col, Card, Avatar, Table } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Greeting from '@/components/Greeting';
 import styles from './Workplace.less';
@@ -31,14 +31,17 @@ class Workplace extends PureComponent {
         offset: 1
       }
     });
+    dispatch({
+      type: 'students/fetchStatistics',
+    });
   }
 
   render() {
     const {
       currentUser,
       currentUserLoading,
-      colleges: { academies= [], majors = [] },
-      students: { students }
+      colleges: { academies = [], majors = [] },
+      students: { students = [], statistics = [] }
     } = this.props;
 
     const pageHeaderContent =
@@ -75,6 +78,190 @@ class Workplace extends PureComponent {
       </div>
     );
 
+    const temp = {}; // 当前重复的值,支持多列
+    const mergeCells = (index, text, array, columns) => {
+      let i = 0;
+      if (!Object.prototype.hasOwnProperty.call(temp, text)) {
+        array.forEach((item) => {
+          if (item[columns] === text) {
+            i += 1;
+          }
+        });
+        temp[text] = {index, i};
+        return i;
+      }
+      const { index: displayIndex, i: displaySpan } = temp[text];
+      if (displayIndex === index) {
+        return displaySpan;
+      }
+      return i;
+    };
+
+
+    const columns = [
+      {
+        title: '学院名称',
+        dataIndex: 'name',
+        width: 140,
+        fixed: 'left',
+        render: (text, record, index) => {
+          const obj = {
+            children: text,
+            props: {},
+          };
+          obj.props.rowSpan = mergeCells(index, record.name, statistics, "name");
+          return obj;
+        }
+      },
+      {
+        title: '招生专业代码',
+        dataIndex: 'major.maj_code',
+        width: 120,
+        fixed: 'left',
+      },
+      {
+        title: '招生专业名称',
+        dataIndex: 'major.name',
+        width: 180,
+        fixed: 'left',
+      },
+      {
+        title: '各专业招生人数',
+        children: [
+          {
+            title: '专业人数',
+            dataIndex: 'major.count',
+            width: 40,
+            align: 'center',
+          },
+          {
+            title: '全日制',
+            children: [
+              {
+                title: '总计',
+                dataIndex: '11',
+                width: 40,
+                align: 'center',
+              },
+              {
+                title: '学术型',
+                children: [
+                  {
+                    title: '第一志愿生',
+                    dataIndex: '0',
+                    width: 100,
+                    align: 'center',
+                  },
+                  {
+                    title: '调剂生',
+                    dataIndex: '1',
+                    width: 100,
+                    align: 'center',
+                  },
+                  {
+                    title: '推免生',
+                    dataIndex: '2',
+                    width: 100,
+                    align: 'center',
+                  },
+                  {
+                    title: '退役大学生',
+                    dataIndex: '3',
+                    width: 120,
+                    align: 'center',
+                  }
+                ],
+              },
+              {
+                title: '总计',
+                dataIndex: '12',
+                width: 40,
+                align: 'center',
+              },
+              {
+                title: '专业型',
+                children: [
+                  {
+                    title: '一志愿生',
+                    dataIndex: '4',
+                    width: 100,
+                    align: 'center',
+                  },
+                  {
+                    title: '调剂生',
+                    dataIndex: '5',
+                    width: 100,
+                    align: 'center',
+                  },
+                  {
+                    title: '推免生',
+                    dataIndex: '6',
+                    width: 100,
+                    align: 'center',
+                  },
+                  {
+                    title: '退役大学生',
+                    dataIndex: '7',
+                    width: 120,
+                    align: 'center',
+                  }
+                ],
+              }
+            ],
+          },
+          {
+            title: '非全日制',
+            children: [
+              {
+                title: '总计',
+                dataIndex: '13',
+                width: 40,
+                align: 'center',
+              },
+              {
+                title: '专业型',
+                children: [
+                  {
+                    title: '一志愿生',
+                    dataIndex: '8',
+                    width: 100,
+                    align: 'center',
+                  },
+                  {
+                    title: '调剂生',
+                    dataIndex: '9',
+                    width: 100,
+                    align: 'center',
+                  },
+                  {
+                    title: '退役大学生',
+                    dataIndex: '10',
+                    width: 120,
+                    align: 'center',
+                  }
+                ],
+              }
+            ],
+          }
+        ],
+      },
+      {
+        title: '总数',
+        dataIndex: 'count',
+        width: 60,
+        align: 'center',
+        fixed: 'right',
+        render: (text, record, index) => {
+          const obj = {
+            children: text,
+            props: {},
+          };
+          obj.props.rowSpan = mergeCells(index, record.name, statistics, "name");
+          return obj;
+        }
+      }
+    ];
+
     return (
       <PageHeaderWrapper
         title='北京信息科技大学'
@@ -84,6 +271,25 @@ class Workplace extends PureComponent {
         type='success'
       >
         <Row gutter={24}>
+          <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+            <Card
+              className={styles.projectList}
+              style={{ marginBottom: 24 }}
+              title="年硕士生分专业招生人数汇总表"
+              bordered={false}
+              bodyStyle={{ padding: 0 }}
+            >
+              <Table
+                columns={columns}
+                dataSource={statistics}
+                rowKey={record => record.code}
+                bordered
+                size="small"
+                pagination={false}
+                scroll={{ x: 1820, y: 600 }}
+              />
+            </Card>
+          </Col>
           <Col xl={24} lg={24} md={24} sm={24} xs={24}>
             <Card
               className={styles.projectList}
