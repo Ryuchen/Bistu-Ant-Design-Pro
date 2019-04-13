@@ -26,6 +26,10 @@ class Workplace extends PureComponent {
     });
     dispatch({
       type: 'students/fetchStudents',
+      payload: {
+        limit: 1,
+        offset: 1
+      }
     });
   }
 
@@ -66,7 +70,7 @@ class Workplace extends PureComponent {
         </div>
         <div className={styles.statItem}>
           <p>研究生数量</p>
-          <p>{students.length}</p>
+          <p>{students.count}</p>
         </div>
       </div>
     );

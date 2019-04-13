@@ -5,7 +5,7 @@ export default {
 
   state: {
     student: {},
-    students: [],
+    students: {},
   },
 
   effects: {
@@ -35,7 +35,7 @@ export default {
     saveStudents(state, action) {
       return {
         ...state,
-        students: action.payload.data || [],
+        students: action.payload || {}
       };
     },
   },
