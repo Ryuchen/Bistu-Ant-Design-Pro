@@ -65,12 +65,16 @@ export async function queryStudentProfile(uuid) {
   });
 }
 
-export async function queryStudentStatistics() {
+export async function queryStudentStatistics(params) {
+  if (params) {
+    return request(`/api/students/statistics/?${stringify(params)}`, {
+      method: 'GET',
+    });
+  }
   return request(`/api/students/statistics/`, {
     method: 'GET',
   });
 }
-
 
 export async function queryTeachers(params) {
   if (params) {

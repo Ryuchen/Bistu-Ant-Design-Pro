@@ -1,7 +1,8 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
-import { Row, Col, Card, Avatar, Table } from 'antd';
+import moment from 'moment';
+import { Row, Col, Card, Avatar, Table, Select, Button } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Greeting from '@/components/Greeting';
 import styles from './Workplace.less';
@@ -42,6 +43,7 @@ class Workplace extends PureComponent {
       currentUserLoading,
       colleges: { academies = [], majors = [] },
       students: { students = {}, statistics = [] },
+      dispatch,
     } = this.props;
 
     const pageHeaderContent = currentUser ? (
@@ -120,7 +122,7 @@ class Workplace extends PureComponent {
       {
         title: '招生专业名称',
         dataIndex: 'major.name',
-        width: 180,
+        width: 210,
         fixed: 'left',
       },
       {
@@ -147,7 +149,7 @@ class Workplace extends PureComponent {
                   {
                     title: '第一志愿生',
                     dataIndex: '0',
-                    width: 100,
+                    width: 120,
                     align: 'center',
                   },
                   {
@@ -180,9 +182,9 @@ class Workplace extends PureComponent {
                 title: '专业型',
                 children: [
                   {
-                    title: '一志愿生',
+                    title: '第一志愿生',
                     dataIndex: '4',
-                    width: 100,
+                    width: 120,
                     align: 'center',
                   },
                   {
@@ -220,9 +222,9 @@ class Workplace extends PureComponent {
                 title: '专业型',
                 children: [
                   {
-                    title: '一志愿生',
+                    title: '第一志愿生',
                     dataIndex: '8',
-                    width: 100,
+                    width: 120,
                     align: 'center',
                   },
                   {
@@ -260,6 +262,22 @@ class Workplace extends PureComponent {
       },
     ];
 
+    const { Option } = Select;
+    const selectOptions = [];
+
+    for (let i = moment().year() - 10; i <= moment().year(); i += 1) {
+      selectOptions.push(i);
+    }
+
+    function handleChange(value) {
+      dispatch({
+        type: 'students/fetchStatistics',
+        payload: {
+          year: value,
+        },
+      });
+    }
+
     return (
       <PageHeaderWrapper
         title="北京信息科技大学"
@@ -270,10 +288,42 @@ class Workplace extends PureComponent {
       >
         <Row gutter={24}>
           <Col xl={24} lg={24} md={24} sm={24} xs={24}>
+            <Select
+              showSearch
+              style={{
+                width: 120,
+                position: 'absolute',
+                margin: '12px 12px 12px -240px',
+                zIndex: 11,
+                left: '100%',
+              }}
+              placeholder="年份"
+              optionFilterProp="children"
+              onChange={handleChange}
+              filterOption={(input, option) =>
+                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+              }
+            >
+              {selectOptions.map(item => {
+                return <Option value={item}>{`${item}`}</Option>;
+              })}
+            </Select>
+            <Button
+              style={{
+                position: 'absolute',
+                margin: '12px 12px 12px -105px',
+                zIndex: 11,
+                left: '100%',
+              }}
+            >
+              导出
+            </Button>
+          </Col>
+          <Col xl={24} lg={24} md={24} sm={24} xs={24}>
             <Card
               className={styles.projectList}
               style={{ marginBottom: 24 }}
-              title="年硕士生分专业招生人数汇总表"
+              title="硕士生分专业招生人数汇总表"
               bordered={false}
               bodyStyle={{ padding: 0 }}
             >
@@ -284,7 +334,7 @@ class Workplace extends PureComponent {
                 bordered
                 size="small"
                 pagination={false}
-                scroll={{ x: 1820, y: 600 }}
+                scroll={{ x: 1910, y: 600 }}
               />
             </Card>
           </Col>
