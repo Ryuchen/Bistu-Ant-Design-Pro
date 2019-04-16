@@ -12,19 +12,29 @@ import styles from './Workplace.less';
   colleges,
   students,
   currentUserLoading: loading.effects['user/fetchCurrent'],
+  statisticLoading: loading.effects['students/fetchStatistics'],
 }))
 class Workplace extends PureComponent {
+  state = {
+    xlsYear: moment().year(),
+  };
+
   componentDidMount() {
     const { dispatch } = this.props;
+    const { xlsYear } = this.state;
+
     dispatch({
       type: 'user/fetchCurrent',
     });
+
     dispatch({
       type: 'colleges/fetchAcademies',
     });
+
     dispatch({
       type: 'colleges/fetchMajors',
     });
+
     dispatch({
       type: 'students/fetchStudents',
       payload: {
@@ -32,10 +42,38 @@ class Workplace extends PureComponent {
         offset: 1,
       },
     });
+
     dispatch({
       type: 'students/fetchStatistics',
+      payload: {
+        year: xlsYear,
+      },
     });
   }
+
+  handleChange = value => {
+    const { dispatch } = this.props;
+    this.setState({
+      xlsYear: value,
+    });
+    dispatch({
+      type: 'students/fetchStatistics',
+      payload: {
+        year: value,
+      },
+    });
+  };
+
+  handleExport = () => {
+    const { dispatch } = this.props;
+    const { xlsYear } = this.state;
+    dispatch({
+      type: 'students/fetchTotalExcel',
+      payload: {
+        year: xlsYear,
+      },
+    });
+  };
 
   render() {
     const {
@@ -43,8 +81,9 @@ class Workplace extends PureComponent {
       currentUserLoading,
       colleges: { academies = [], majors = [] },
       students: { students = {}, statistics = [] },
-      dispatch,
+      statisticLoading,
     } = this.props;
+    const { xlsYear } = this.state;
 
     const pageHeaderContent = currentUser ? (
       <div className={styles.pageHeaderContent}>
@@ -61,7 +100,6 @@ class Workplace extends PureComponent {
         </div>
       </div>
     ) : null;
-
     const extraContent = (
       <div className={styles.extraContent}>
         <div className={styles.statItem}>
@@ -78,7 +116,6 @@ class Workplace extends PureComponent {
         </div>
       </div>
     );
-
     const temp = {}; // 当前重复的值,支持多列
     const mergeCells = (index, text, array, columnName) => {
       let i = 0;
@@ -97,7 +134,6 @@ class Workplace extends PureComponent {
       }
       return i;
     };
-
     const columns = [
       {
         title: '学院名称',
@@ -261,23 +297,11 @@ class Workplace extends PureComponent {
         },
       },
     ];
-
     const { Option } = Select;
     const selectOptions = [];
-
     for (let i = moment().year() - 10; i <= moment().year(); i += 1) {
       selectOptions.push(i);
     }
-
-    function handleChange(value) {
-      dispatch({
-        type: 'students/fetchStatistics',
-        payload: {
-          year: value,
-        },
-      });
-    }
-
     return (
       <PageHeaderWrapper
         title="北京信息科技大学"
@@ -289,7 +313,6 @@ class Workplace extends PureComponent {
         <Row gutter={24}>
           <Col xl={24} lg={24} md={24} sm={24} xs={24}>
             <Select
-              showSearch
               style={{
                 width: 120,
                 position: 'absolute',
@@ -297,12 +320,8 @@ class Workplace extends PureComponent {
                 zIndex: 11,
                 left: '100%',
               }}
-              placeholder="年份"
-              optionFilterProp="children"
-              onChange={handleChange}
-              filterOption={(input, option) =>
-                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-              }
+              defaultValue={xlsYear}
+              onChange={this.handleChange}
             >
               {selectOptions.map(item => {
                 return <Option value={item}>{`${item}`}</Option>;
@@ -315,6 +334,7 @@ class Workplace extends PureComponent {
                 zIndex: 11,
                 left: '100%',
               }}
+              onClick={this.handleExport}
             >
               导出
             </Button>
@@ -331,6 +351,7 @@ class Workplace extends PureComponent {
                 columns={columns}
                 dataSource={statistics}
                 rowKey={record => record.code}
+                loading={statisticLoading}
                 bordered
                 size="small"
                 pagination={false}

@@ -76,6 +76,17 @@ export async function queryStudentStatistics(params) {
   });
 }
 
+export async function queryStudentTotalExport(params) {
+  if (params) {
+    return request(`/api/students/create_xls/?${stringify(params)}`, {
+      method: 'GET',
+    });
+  }
+  return request(`/api/students/create_xls/`, {
+    method: 'GET',
+  });
+}
+
 export async function queryTeachers(params) {
   if (params) {
     return request(`/api/teachers/teachers/?${stringify(params)}`, {

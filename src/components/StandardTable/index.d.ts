@@ -1,8 +1,10 @@
-import React from 'react';
 import { PaginationConfig, SorterResult, TableCurrentDataSource } from 'antd/lib/table';
+import React from 'react';
 
 export interface StandardTableProps {
   columns: any;
+  displayAlert?: boolean;
+  displayRowsSelect?: boolean;
   onSelectRow: (row: any) => void;
   data: any;
   rowKey?: string;

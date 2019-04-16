@@ -63,7 +63,15 @@ class StandardTable extends PureComponent {
 
   render() {
     const { selectedRowKeys, needTotalList } = this.state;
-    const { dataSource = [], pagination, total, rowKey, ...rest } = this.props;
+    const {
+      dataSource = [],
+      pagination,
+      total,
+      rowKey,
+      displayAlert,
+      displayRowsSelect,
+      ...rest
+    } = this.props;
 
     const paginationProps = {
       showSizeChanger: true,
@@ -71,43 +79,47 @@ class StandardTable extends PureComponent {
       ...pagination,
     };
 
-    const rowSelection = {
-      selectedRowKeys,
-      onChange: this.handleRowSelectChange,
-      getCheckboxProps: record => ({
-        disabled: record.disabled,
-      }),
-    };
+    const rowSelection = displayRowsSelect
+      ? {
+          selectedRowKeys,
+          onChange: this.handleRowSelectChange,
+          getCheckboxProps: record => ({
+            disabled: record.disabled,
+          }),
+        }
+      : null;
 
     return (
       <div className={styles.standardTable}>
-        <div className={styles.tableAlert}>
-          <Alert
-            message={
-              <Fragment>
-                已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 项&nbsp;&nbsp;
-                {needTotalList.map(item => (
-                  <span style={{ marginLeft: 8 }} key={item.dataIndex}>
-                    {item.title}
-                    总计&nbsp;
-                    <span style={{ fontWeight: 600 }}>
-                      {item.render ? item.render(item.total) : item.total}
+        {displayAlert ? (
+          <div className={styles.tableAlert}>
+            <Alert
+              message={
+                <Fragment>
+                  已选择 <a style={{ fontWeight: 600 }}>{selectedRowKeys.length}</a> 项&nbsp;&nbsp;
+                  {needTotalList.map(item => (
+                    <span style={{ marginLeft: 8 }} key={item.dataIndex}>
+                      {item.title}
+                      总计&nbsp;
+                      <span style={{ fontWeight: 600 }}>
+                        {item.render ? item.render(item.total) : item.total}
+                      </span>
                     </span>
+                  ))}
+                  <a onClick={this.cleanSelectedKeys} style={{ marginLeft: 24 }}>
+                    清空
+                  </a>
+                  <span style={{ marginRight: 8, float: 'right' }}>
+                    数据总量&nbsp;
+                    <span style={{ fontWeight: 600 }}>{total}</span>
                   </span>
-                ))}
-                <a onClick={this.cleanSelectedKeys} style={{ marginLeft: 24 }}>
-                  清空
-                </a>
-                <span style={{ marginRight: 8, float: 'right' }}>
-                  数据总量&nbsp;
-                  <span style={{ fontWeight: 600 }}>{total}</span>
-                </span>
-              </Fragment>
-            }
-            type="info"
-            showIcon
-          />
-        </div>
+                </Fragment>
+              }
+              type="info"
+              showIcon
+            />
+          </div>
+        ) : null}
         <Table
           rowKey={rowKey || 'key'}
           rowSelection={rowSelection}

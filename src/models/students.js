@@ -1,4 +1,9 @@
-import { queryStudents, queryStudentProfile, queryStudentStatistics } from '@/services/bistu';
+import {
+  queryStudents,
+  queryStudentProfile,
+  queryStudentStatistics,
+  queryStudentTotalExport,
+} from '@/services/bistu';
 
 export default {
   namespace: 'students',
@@ -30,6 +35,9 @@ export default {
         type: 'saveStatistics',
         payload: response,
       });
+    },
+    *fetchTotalExcel({ payload }, { call }) {
+      return yield call(queryStudentTotalExport, payload);
     },
   },
 

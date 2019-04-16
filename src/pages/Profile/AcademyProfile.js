@@ -5,22 +5,14 @@ import DescriptionList from '@/components/DescriptionList';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import router from 'umi/router';
 import styles from './AcademyProfile.less';
+import StudentTable from '@/components/StudentTable';
 
 const { Description } = DescriptionList;
-const StatusChoice = ['在校', '离校', '留校'];
-const CultivatingMode = ['学硕', '专硕'];
-const GenderChoice = ['男', '女'];
-const StudentCategory = ['全日制', '非全日制'];
-const EnrollmentCategory = ['定向', '非定向'];
-// const PoliticalChoice = ['党员', '团员', '群众', '民主党派'];
-// const TeacherTitle = ['讲师', '副教授', '教授', '副研究员', '研究员', '助教'];
 
-@connect(({ colleges, students, teachers, loading }) => ({
+@connect(({ colleges, teachers, loading }) => ({
   colleges,
-  students,
   teachers,
   majorsLoading: loading.effects['colleges/fetchAcademy'],
-  studentsLoading: loading.effects['students/fetchStudents'],
   teachersLoading: loading.effects['teachers/fetchTeachers'],
 }))
 class AcademyProfile extends Component {
@@ -51,108 +43,13 @@ class AcademyProfile extends Component {
   render() {
     const {
       colleges: { academy },
-      students: { students },
       teachers: { teachers },
       majorsLoading,
-      studentsLoading,
       teachersLoading,
     } = this.props;
 
-    const { count: stuCount, results: stuResults = [] } = students;
     const { count: tutCount, results: tutResults = [] } = teachers;
     const { aca_user: acaUser = {} } = academy;
-
-    const studentColumns = [
-      {
-        title: '学号',
-        dataIndex: 'stu_number',
-        render: val => `${val}`,
-      },
-      {
-        title: '学生姓名',
-        dataIndex: 'user.id',
-        key: 'user.id',
-        render: (val, record) => (
-          <a onClick={() => router.push(`/students/${record.uuid}`)}>
-            {record.user.first_name}
-            {record.user.last_name}
-          </a>
-        ),
-      },
-      {
-        title: '性别',
-        dataIndex: 'stu_gender',
-        filters: [
-          { text: GenderChoice[0], value: GenderChoice[0] },
-          { text: GenderChoice[1], value: GenderChoice[1] },
-        ],
-        onFilter: (value, record) => record.stu_gender === value,
-        render: val => `${val}`,
-      },
-      {
-        title: '民族',
-        dataIndex: 'stu_nation',
-        sorter: true,
-        render: val => `${val}`,
-      },
-      {
-        title: '状态',
-        dataIndex: 'stu_status',
-        filters: [
-          { text: StatusChoice[0], value: StatusChoice[0] },
-          { text: StatusChoice[1], value: StatusChoice[1] },
-          { text: StatusChoice[2], value: StatusChoice[2] },
-        ],
-        onFilter: (value, record) => record.stu_status === value,
-        render: val => `${val}`,
-      },
-      {
-        title: '学科专业',
-        dataIndex: 'major',
-        sorter: true,
-        render: val => `${val.maj_name}`,
-      },
-      {
-        title: '学习形式',
-        dataIndex: 'stu_learn_type',
-        filters: [
-          { text: StudentCategory[0], value: StudentCategory[0] },
-          { text: StudentCategory[1], value: StudentCategory[1] },
-        ],
-        onFilter: (value, record) => record.stu_learn_type === value,
-        render: val => `${val}`,
-      },
-      {
-        title: '培养方式',
-        dataIndex: 'stu_cultivating_mode',
-        filters: [
-          { text: CultivatingMode[0], value: CultivatingMode[0] },
-          { text: CultivatingMode[1], value: CultivatingMode[1] },
-        ],
-        onFilter: (value, record) => record.stu_cultivating_mode === value,
-        render: val => `${val}`,
-      },
-      {
-        title: '录取类型',
-        dataIndex: 'stu_enrollment_category',
-        filters: [
-          { text: EnrollmentCategory[0], value: EnrollmentCategory[0] },
-          { text: EnrollmentCategory[1], value: EnrollmentCategory[1] },
-        ],
-        onFilter: (value, record) => record.stu_enrollment_category === value,
-        render: val => `${val}`,
-      },
-      {
-        title: '入学时间',
-        dataIndex: 'stu_entrance_time',
-        render: val => `${val}`,
-      },
-      {
-        title: '毕业时间',
-        dataIndex: 'stu_graduation_time',
-        render: val => `${val}`,
-      },
-    ];
 
     const teacherColumns = [
       {
@@ -287,14 +184,11 @@ class AcademyProfile extends Component {
             pagination={false}
             loading={teachersLoading}
           />
-          <div className={styles.title}>学生列表 ({stuCount})</div>
-          <Table
-            style={{ marginBottom: 24 }}
-            rowKey={record => record.uuid}
-            columns={studentColumns}
-            dataSource={stuResults}
-            pagination={{ pageSize: 20, total: stuCount, showSizeChanger: false }}
-            loading={studentsLoading}
+          <div className={styles.title}>学生列表</div>
+          <StudentTable
+            displayAlert={false}
+            displaySearch={false}
+            defaultFilter={{ academy: academy.uuid }}
           />
         </Card>
       </PageHeaderWrapper>

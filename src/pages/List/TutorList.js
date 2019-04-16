@@ -199,6 +199,8 @@ class TableList extends PureComponent {
                 obj[column.title] = row.academy.aca_cname;
               } else if (column.dataIndex === 'user.email') {
                 obj[column.title] = row.user.email;
+              } else if (column.dataIndex === 'education.edu_school_name') {
+                obj[column.title] = row.education.edu_school_name;
               } else {
                 obj[column.title] = row[column.dataIndex];
               }
@@ -248,7 +250,9 @@ class TableList extends PureComponent {
     const { dispatch, form } = this.props;
 
     form.validateFields((err, fieldsValue) => {
-      if (err) return;
+      if (err) {
+        return;
+      }
 
       const values = {
         ...fieldsValue,
