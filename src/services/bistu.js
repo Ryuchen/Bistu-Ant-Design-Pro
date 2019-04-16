@@ -3,6 +3,11 @@ import request from '@/utils/request';
 
 // This section is the api interface and fake api interface
 // TODO: this function is connect to django
+export async function globalDefinitions() {
+  return request('/api/settings/definitions/', {
+    method: 'GET',
+  });
+}
 
 export async function AccountLogin(params) {
   return request('/api/accounts/login/', {
@@ -72,17 +77,6 @@ export async function queryStudentStatistics(params) {
     });
   }
   return request(`/api/students/statistics/`, {
-    method: 'GET',
-  });
-}
-
-export async function queryStudentTotalExport(params) {
-  if (params) {
-    return request(`/api/students/create_xls/?${stringify(params)}`, {
-      method: 'GET',
-    });
-  }
-  return request(`/api/students/create_xls/`, {
     method: 'GET',
   });
 }

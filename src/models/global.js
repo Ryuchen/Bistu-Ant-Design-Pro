@@ -1,4 +1,5 @@
 import { queryNotices } from '@/services/api';
+import { globalDefinitions } from '@/services/bistu';
 
 export default {
   namespace: 'global',
@@ -6,6 +7,7 @@ export default {
   state: {
     collapsed: false,
     notices: [],
+    definitions: {},
   },
 
   effects: {
@@ -43,6 +45,13 @@ export default {
         },
       });
     },
+    *fetchGlobalDefinitions(_, { put, call }) {
+      const response = yield call(globalDefinitions);
+      yield put({
+        type: 'saveDefinitions',
+        payload: response,
+      });
+    },
     *changeNoticeReadState({ payload }, { put, select }) {
       const notices = yield select(state =>
         state.global.notices.map(item => {
@@ -78,6 +87,12 @@ export default {
       return {
         ...state,
         notices: payload,
+      };
+    },
+    saveDefinitions(state, { payload }) {
+      return {
+        ...state,
+        definitions: payload,
       };
     },
     saveClearedNotices(state, { payload }) {

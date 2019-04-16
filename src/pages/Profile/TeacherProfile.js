@@ -26,6 +26,7 @@ class TeacherProfile extends Component {
   render() {
     const {
       teachers: { teacher },
+      match: { params },
     } = this.props;
 
     const { user = {}, academy = {} } = teacher;
@@ -72,7 +73,7 @@ class TeacherProfile extends Component {
           <StudentTable
             displayAlert={false}
             displaySearch={false}
-            defaultFilter={{ teacher: teacher.uuid }}
+            defaultFilter={{ tutor: params.id }}
           />
         </Card>
       </PageHeaderWrapper>

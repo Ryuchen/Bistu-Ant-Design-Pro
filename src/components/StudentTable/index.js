@@ -3,10 +3,9 @@ import moment from 'moment';
 import ExportJsonExcel from 'js-export-excel';
 import { connect } from 'dva';
 import router from 'umi/router';
-import { Row, Col, Card, Form, Input, Select, Button, Upload, notification, Badge } from 'antd';
+import { Row, Col, Form, Input, Select, Button, Upload, notification, Badge } from 'antd';
 
 import StandardTable from '@/components/StandardTable';
-import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 
 import styles from './index.less';
 
@@ -17,27 +16,8 @@ const getValue = obj =>
     .map(key => obj[key])
     .join(',');
 
-const GenderChoice = ['男', '女'];
-const PoliticalChoice = ['党员', '团员', '群众', '民主党派'];
-const DegreeChoice = ['博士', '硕士', '本科'];
-const StatusChoice = ['在校', '离校', '留校'];
-const StudentType = ['硕士', '博士', '本硕连读', '硕博连读', '直博'];
-const StudentCategory = ['全日制', '非全日制'];
-const CultivatingMode = ['学硕', '专硕'];
-const EnrollmentCategory = ['定向', '非定向'];
-const SpecialProgram = [
-  '无',
-  '少数民族高层次骨干计划',
-  '强军计划',
-  '对口支援西部地区高校定向培养计划',
-  '援藏计划',
-  '农村学校教育硕士师资培养计划',
-  '高校辅导员攻读思想政治教育专业硕士学位计划',
-  '高校思想政治理论课教师攻读博士学位计划',
-  '其他',
-];
-
-@connect(({ students, colleges, teachers, loading }) => ({
+@connect(({ global, students, colleges, teachers, loading }) => ({
+  global,
   students,
   colleges,
   teachers,
@@ -45,284 +25,6 @@ const SpecialProgram = [
 }))
 @Form.create()
 class StudentTable extends PureComponent {
-  studentColumns = [
-    {
-      title: '姓名',
-      dataIndex: 'user.username',
-      key: 'user.username',
-      fixed: 'left',
-      width: 100,
-      render: (val, record) => (
-        <a onClick={() => this.previewItem(record.uuid)}>
-          {record.user.first_name}
-          {record.user.last_name}
-        </a>
-      ),
-    },
-    {
-      title: '学号',
-      dataIndex: 'stu_number',
-      key: 'stu_number',
-      fixed: 'left',
-      width: 190,
-      sorter: (a, b) => a.stu_number - b.stu_number,
-      render: val => `${val}`,
-    },
-    {
-      title: '考生号',
-      dataIndex: 'stu_candidate_number',
-      key: 'stu_candidate_number',
-      width: 190,
-      sorter: (a, b) => a.stu_candidate_number - b.stu_candidate_number,
-      render: val => `${val}`,
-    },
-    {
-      title: '证件类型',
-      dataIndex: 'stu_card_type',
-      key: 'stu_card_type',
-      width: 190,
-      render: val => `${val}`,
-    },
-    {
-      title: '证件号',
-      dataIndex: 'stu_cardID',
-      key: 'stu_cardID',
-      width: 190,
-      sorter: (a, b) => a.stu_cardID - b.stu_cardID,
-      render: val => `${val}`,
-    },
-    {
-      title: '性别',
-      dataIndex: 'stu_gender',
-      key: 'stu_gender',
-      width: 90,
-      filters: [{ text: GenderChoice[0], value: 'G1' }, { text: GenderChoice[1], value: 'G2' }],
-      onFilter: (value, record) => record.stu_gender === value,
-      render: val => `${val}`,
-    },
-    {
-      title: '出生日期',
-      dataIndex: 'stu_birth_day',
-      key: 'stu_birth_day',
-      width: 190,
-      sorter: (a, b) =>
-        moment(a.stu_entrance_time, 'YYYY-MM-DD').toDate() -
-        moment(b.stu_entrance_time, 'YYYY-MM-DD').toDate(),
-      render: val => `${val}`,
-    },
-    {
-      title: '民族',
-      dataIndex: 'stu_nation',
-      key: 'stu_nation',
-      width: 120,
-      render: val => `${val}`,
-    },
-    {
-      title: '生源地',
-      dataIndex: 'stu_source',
-      key: 'stu_source',
-      width: 160,
-      render: val => `${val}`,
-    },
-    {
-      title: '农村学生',
-      dataIndex: 'stu_is_village',
-      width: 160,
-      render: value => <Badge status={value ? 'success' : 'error'} style={{ marginLeft: 5 }} />,
-    },
-    {
-      title: '政治面貌',
-      dataIndex: 'stu_political',
-      key: 'stu_political',
-      width: 160,
-      filters: [
-        { text: PoliticalChoice[0], value: 'P1' },
-        { text: PoliticalChoice[1], value: 'P2' },
-        { text: PoliticalChoice[2], value: 'P3' },
-        { text: PoliticalChoice[3], value: 'P4' },
-      ],
-      onFilter: (value, record) => record.stu_political === value,
-      render: val => `${val}`,
-    },
-    {
-      title: '学院',
-      dataIndex: 'academy.aca_cname',
-      width: 160,
-      render: val => `${val}`,
-    },
-    {
-      title: '专业',
-      dataIndex: 'major.maj_name',
-      width: 160,
-      render: val => `${val}`,
-    },
-    {
-      title: '学科类型',
-      dataIndex: 'major.maj_type',
-      width: 160,
-      render: val => `${val}`,
-    },
-    {
-      title: '所属班级',
-      dataIndex: 'stu_class',
-      width: 160,
-      render: val => `${val}`,
-    },
-    {
-      title: '状态',
-      dataIndex: 'stu_status',
-      key: 'stu_status',
-      width: 90,
-      filters: [
-        { text: StatusChoice[0], value: StatusChoice[0] },
-        { text: StatusChoice[1], value: StatusChoice[1] },
-        { text: StatusChoice[2], value: StatusChoice[2] },
-      ],
-      onFilter: (value, record) => record.stu_status === value,
-      render: val => `${val}`,
-    },
-    {
-      title: '学生类型',
-      dataIndex: 'stu_type',
-      key: 'stu_type',
-      width: 160,
-      filters: [
-        { text: StudentType[0], value: 'S1' },
-        { text: StudentType[1], value: 'S2' },
-        { text: StudentType[2], value: 'S3' },
-        { text: StudentType[3], value: 'S4' },
-        { text: StudentType[4], value: 'S5' },
-      ],
-      onFilter: (value, record) => record.stu_type === value,
-      render: val => `${val}`,
-    },
-    {
-      title: '学习形式',
-      dataIndex: 'stu_learn_type',
-      key: 'stu_learn_type',
-      width: 120,
-      filters: [
-        { text: StudentCategory[0], value: StudentCategory[0] },
-        { text: StudentCategory[1], value: StudentCategory[1] },
-      ],
-      onFilter: (value, record) => record.stu_learn_type === value,
-      render: val => `${val}`,
-    },
-    {
-      title: '学习阶段',
-      dataIndex: 'stu_learn_status',
-      key: 'stu_learn_status',
-      width: 120,
-      filters: [
-        { text: DegreeChoice[0], value: DegreeChoice[0] },
-        { text: DegreeChoice[1], value: DegreeChoice[1] },
-        { text: DegreeChoice[1], value: DegreeChoice[1] },
-      ],
-      onFilter: (value, record) => record.stu_learn_status === value,
-      render: val => `${val}`,
-    },
-    {
-      title: '年级',
-      dataIndex: 'stu_grade',
-      key: 'stu_grade',
-      width: 120,
-      render: val => `${val}`,
-    },
-    {
-      title: '学制',
-      dataIndex: 'stu_system',
-      key: 'stu_system',
-      width: 120,
-      render: val => `${val}`,
-    },
-    {
-      title: '培养方式',
-      dataIndex: 'stu_cultivating_mode',
-      key: 'stu_cultivating_mode',
-      width: 120,
-      filters: [
-        { text: CultivatingMode[0], value: CultivatingMode[0] },
-        { text: CultivatingMode[1], value: CultivatingMode[1] },
-      ],
-      onFilter: (value, record) => record.stu_cultivating_mode === value,
-      render: val => `${val}`,
-    },
-    {
-      title: '录取类型',
-      dataIndex: 'stu_enrollment_category',
-      key: 'stu_enrollment_category',
-      width: 120,
-      filters: [
-        { text: EnrollmentCategory[0], value: EnrollmentCategory[0] },
-        { text: EnrollmentCategory[1], value: EnrollmentCategory[1] },
-      ],
-      onFilter: (value, record) => record.stu_enrollment_category === value,
-      render: val => `${val}`,
-    },
-    {
-      title: '国籍',
-      dataIndex: 'stu_nationality',
-      key: 'stu_nationality',
-      width: 120,
-      render: val => `${val}`,
-    },
-    {
-      title: '专项计划',
-      dataIndex: 'stu_special_program',
-      key: 'stu_special_program',
-      width: 400,
-      filters: [
-        { text: SpecialProgram[0], value: SpecialProgram[0] },
-        { text: SpecialProgram[1], value: SpecialProgram[1] },
-      ],
-      onFilter: (value, record) => record.stu_special_program === value,
-      render: val => `${val}`,
-    },
-    {
-      title: '固定收入',
-      dataIndex: 'stu_is_regular_income',
-      width: 100,
-      render: value => <Badge status={value ? 'success' : 'error'} style={{ marginLeft: 5 }} />,
-    },
-    {
-      title: '欠缴学费',
-      dataIndex: 'stu_is_tuition_fees',
-      width: 100,
-      render: value => <Badge status={value ? 'success' : 'error'} style={{ marginLeft: 5 }} />,
-    },
-    {
-      title: '档案在校',
-      dataIndex: 'stu_is_archives',
-      width: 100,
-      render: value => <Badge status={value ? 'success' : 'error'} style={{ marginLeft: 5 }} />,
-    },
-    {
-      title: '入学时间',
-      dataIndex: 'stu_entrance_time',
-      key: 'stu_entrance_time',
-      sorter: (a, b) =>
-        moment(a.stu_entrance_time, 'YYYY-MM-DD').toDate() -
-        moment(b.stu_entrance_time, 'YYYY-MM-DD').toDate(),
-      render: val => `${val}`,
-    },
-    {
-      title: '毕业时间',
-      dataIndex: 'stu_graduation_time',
-      key: 'stu_graduation_time',
-      sorter: (a, b) =>
-        moment(a.stu_graduation_time, 'YYYY-MM-DD').toDate() -
-        moment(b.stu_graduation_time, 'YYYY-MM-DD').toDate(),
-      render: val => (val ? `${val}` : '-'),
-    },
-    {
-      title: '操作',
-      fixed: 'right',
-      key: 'uuid',
-      width: 60,
-      render: (val, record) => <a onClick={() => this.previewItem(record.uuid)}>详情</a>,
-    },
-  ];
-
   constructor(props) {
     super(props);
     const { defaultFilter } = this.props;
@@ -337,6 +39,10 @@ class StudentTable extends PureComponent {
   componentDidMount() {
     const { formValues } = this.state;
     const { displaySearch, dispatch } = this.props;
+
+    dispatch({
+      type: 'global/fetchGlobalDefinitions',
+    });
 
     dispatch({
       type: 'students/fetchStudents',
@@ -391,7 +97,7 @@ class StudentTable extends PureComponent {
     router.push(`/students/${id}`);
   };
 
-  handleExportClick = () => {
+  handleExportClick = studentColumns => {
     const { selectedRows } = this.state;
     const option = {};
     const exportData = [];
@@ -401,7 +107,7 @@ class StudentTable extends PureComponent {
       selectedRows.forEach(row => {
         if (row) {
           const obj = {};
-          this.studentColumns.forEach(column => {
+          studentColumns.forEach(column => {
             if (column.dataIndex) {
               if (column.dataIndex === 'user.username') {
                 obj[column.title] = row.user.first_name + row.user.last_name;
@@ -487,7 +193,23 @@ class StudentTable extends PureComponent {
     });
   };
 
-  renderSimpleForm() {
+  getCookie = name => {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i += 1) {
+        const cookie = cookies[i].trim();
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === `${name}=`) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  };
+
+  renderSimpleForm = studentColumns => {
     const {
       form: { getFieldDecorator },
       colleges: { academies = [] },
@@ -495,31 +217,15 @@ class StudentTable extends PureComponent {
       dispatch,
     } = this.props;
 
-    const { selectedRows } = this.state;
+    const { selectedRows, formValues } = this.state;
 
     const { results = [] } = teachers;
-
-    function getCookie(name) {
-      let cookieValue = null;
-      if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i += 1) {
-          const cookie = cookies[i].trim();
-          // Does this cookie string begin with the name we want?
-          if (cookie.substring(0, name.length + 1) === `${name}=`) {
-            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-            break;
-          }
-        }
-      }
-      return cookieValue;
-    }
 
     const props = {
       name: 'file',
       action: '/api/students/students/',
       headers: {
-        'X-CSRFToken': getCookie('csrftoken'),
+        'X-CSRFToken': this.getCookie('csrftoken'),
       },
       showUploadList: false,
       onChange(info) {
@@ -531,6 +237,7 @@ class StudentTable extends PureComponent {
 
           dispatch({
             type: 'students/fetchStudents',
+            payload: formValues,
           });
         } else if (info.file.status === 'error') {
           notification.error({
@@ -590,7 +297,11 @@ class StudentTable extends PureComponent {
                 </Button>
               </Upload>
               {selectedRows.length > 0 && (
-                <Button style={{ marginLeft: 8 }} onClick={this.handleExportClick} size="small">
+                <Button
+                  style={{ marginLeft: 8 }}
+                  onClick={this.handleExportClick(studentColumns)}
+                  size="small"
+                >
                   导出
                 </Button>
               )}
@@ -599,10 +310,12 @@ class StudentTable extends PureComponent {
         </Row>
       </Form>
     );
-  }
+  };
 
   render() {
+    const { selectedRows } = this.state;
     const {
+      global: { definitions },
       students: { students },
       studentsLoading,
       displayAlert,
@@ -612,38 +325,374 @@ class StudentTable extends PureComponent {
 
     const { count, results = [] } = students;
 
-    const { selectedRows } = this.state;
-
     const paginationProps = {
       pageSize: 20,
       total: count,
       showSizeChanger: false,
     };
 
+    const nation = Array.from(
+      new Set(
+        results.map(item => {
+          return item.stu_nation;
+        })
+      )
+    );
+    const source = Array.from(
+      new Set(
+        results.map(item => {
+          return item.stu_source;
+        })
+      )
+    );
+
+    const {
+      gender_choice: ServerGenderChoice = {},
+      degree_choice: ServerDegreeChoice = {},
+      political_choice: ServerPoliticalChoice = {},
+      major_type: ServerMajorTypeChoice = {},
+      status_choice: ServerStatusChoice = {},
+      student_type: ServerStudentTypeChoice = {},
+      student_category: ServerStudentCategoryChoice = {},
+      cultivating_mode: ServerCultivationModeChoice = {},
+      enrollment_category: ServerEnrollmentCategory = {},
+      special_program: ServerSpecialProgramChoice = {},
+    } = definitions;
+
+    const filterGenderChoice = Object.entries(ServerGenderChoice).map(([itemKey, itemValue]) => {
+      return { text: itemValue, value: itemKey };
+    });
+
+    const filterDegreeChoice = Object.entries(ServerDegreeChoice).map(([itemKey, itemValue]) => {
+      return { text: itemValue, value: itemKey };
+    });
+
+    const filterPoliticalChoice = Object.entries(ServerPoliticalChoice).map(
+      ([itemKey, itemValue]) => {
+        return { text: itemValue, value: itemKey };
+      }
+    );
+
+    const filterMajorTypeChoice = Object.entries(ServerMajorTypeChoice).map(
+      ([itemKey, itemValue]) => {
+        return { text: itemValue, value: itemKey };
+      }
+    );
+
+    const filterStatusChoice = Object.entries(ServerStatusChoice).map(([itemKey, itemValue]) => {
+      return { text: itemValue, value: itemKey };
+    });
+
+    const filterStudentTypeChoice = Object.entries(ServerStudentTypeChoice).map(
+      ([itemKey, itemValue]) => {
+        return { text: itemValue, value: itemKey };
+      }
+    );
+
+    const filterStudentCategoryChoice = Object.entries(ServerStudentCategoryChoice).map(
+      ([itemKey, itemValue]) => {
+        return { text: itemValue, value: itemKey };
+      }
+    );
+
+    const filterCultivationModeChoice = Object.entries(ServerCultivationModeChoice).map(
+      ([itemKey, itemValue]) => {
+        return { text: itemValue, value: itemKey };
+      }
+    );
+
+    const filterEnrollmentCategory = Object.entries(ServerEnrollmentCategory).map(
+      ([itemKey, itemValue]) => {
+        return { text: itemValue, value: itemKey };
+      }
+    );
+
+    const filterSpecialProgramChoice = Object.entries(ServerSpecialProgramChoice).map(
+      ([itemKey, itemValue]) => {
+        return { text: itemValue, value: itemKey };
+      }
+    );
+
+    const studentColumns = [
+      {
+        title: '姓名',
+        dataIndex: 'user.username',
+        key: 'user.username',
+        fixed: 'left',
+        width: 100,
+        render: (val, record) => (
+          <a onClick={() => this.previewItem(record.uuid)}>
+            {record.user.first_name}
+            {record.user.last_name}
+          </a>
+        ),
+      },
+      {
+        title: '学号',
+        dataIndex: 'stu_number',
+        key: 'stu_number',
+        fixed: 'left',
+        width: 190,
+        sorter: (a, b) => a.stu_number - b.stu_number,
+        render: val => `${val}`,
+      },
+      {
+        title: '考生号',
+        dataIndex: 'stu_candidate_number',
+        key: 'stu_candidate_number',
+        width: 190,
+        sorter: (a, b) => a.stu_candidate_number - b.stu_candidate_number,
+        render: val => `${val}`,
+      },
+      {
+        title: '证件类型',
+        dataIndex: 'stu_card_type',
+        key: 'stu_card_type',
+        width: 190,
+        render: val => `${val}`,
+      },
+      {
+        title: '证件号',
+        dataIndex: 'stu_cardID',
+        key: 'stu_cardID',
+        width: 190,
+        sorter: (a, b) => a.stu_cardID - b.stu_cardID,
+        render: val => `${val}`,
+      },
+      {
+        title: '性别',
+        dataIndex: 'stu_gender',
+        key: 'stu_gender',
+        width: 90,
+        filters: filterGenderChoice,
+        onFilter: (value, record) => record.stu_gender === ServerGenderChoice[value],
+        render: val => `${val}`,
+      },
+      {
+        title: '出生日期',
+        dataIndex: 'stu_birth_day',
+        key: 'stu_birth_day',
+        width: 190,
+        sorter: (a, b) =>
+          moment(a.stu_birth_day, 'YYYY-MM-DD').toDate() -
+          moment(b.stu_birth_day, 'YYYY-MM-DD').toDate(),
+        render: val => `${val}`,
+      },
+      {
+        title: '民族',
+        dataIndex: 'stu_nation',
+        key: 'stu_nation',
+        width: 120,
+        filters: nation.map(item => {
+          return { text: item, value: item };
+        }),
+        onFilter: (value, record) => record.stu_nation === value,
+        render: val => `${val}`,
+      },
+      {
+        title: '生源地',
+        dataIndex: 'stu_source',
+        key: 'stu_source',
+        width: 160,
+        filters: source.map(item => {
+          return { text: item, value: item };
+        }),
+        onFilter: (value, record) => record.stu_source === value,
+        render: val => `${val}`,
+      },
+      {
+        title: '农村学生',
+        dataIndex: 'stu_is_village',
+        width: 160,
+        render: value => <Badge status={value ? 'success' : 'error'} style={{ marginLeft: 5 }} />,
+      },
+      {
+        title: '政治面貌',
+        dataIndex: 'stu_political',
+        key: 'stu_political',
+        width: 160,
+        filters: filterPoliticalChoice,
+        onFilter: (value, record) => record.stu_political === ServerPoliticalChoice[value],
+        render: val => `${val}`,
+      },
+      {
+        title: '学院',
+        dataIndex: 'academy.aca_cname',
+        width: 160,
+        render: val => `${val}`,
+      },
+      {
+        title: '专业',
+        dataIndex: 'major.maj_name',
+        width: 160,
+        render: val => `${val}`,
+      },
+      {
+        title: '学科类型',
+        dataIndex: 'major.maj_type',
+        width: 160,
+        filters: filterMajorTypeChoice,
+        onFilter: (value, record) => record.major.maj_type === ServerMajorTypeChoice[value],
+        render: val => `${val}`,
+      },
+      {
+        title: '所属班级',
+        dataIndex: 'stu_class',
+        width: 160,
+        render: val => `${val}`,
+      },
+      {
+        title: '状态',
+        dataIndex: 'stu_status',
+        key: 'stu_status',
+        width: 90,
+        filters: filterStatusChoice,
+        onFilter: (value, record) => record.stu_status === ServerStatusChoice[value],
+        render: val => `${val}`,
+      },
+      {
+        title: '学生类型',
+        dataIndex: 'stu_type',
+        key: 'stu_type',
+        width: 160,
+        filters: filterStudentTypeChoice,
+        onFilter: (value, record) => record.stu_type === ServerStudentTypeChoice[value],
+        render: val => `${val}`,
+      },
+      {
+        title: '学习形式',
+        dataIndex: 'stu_learn_type',
+        key: 'stu_learn_type',
+        width: 120,
+        filters: filterStudentCategoryChoice,
+        onFilter: (value, record) => record.stu_learn_type === ServerStudentCategoryChoice[value],
+        render: val => `${val}`,
+      },
+      {
+        title: '学习阶段',
+        dataIndex: 'stu_learn_status',
+        key: 'stu_learn_status',
+        width: 120,
+        filters: filterDegreeChoice,
+        onFilter: (value, record) => record.stu_learn_status === ServerDegreeChoice[value],
+        render: val => `${val}`,
+      },
+      {
+        title: '年级',
+        dataIndex: 'stu_grade',
+        key: 'stu_grade',
+        width: 120,
+        render: val => `${val}`,
+      },
+      {
+        title: '学制',
+        dataIndex: 'stu_system',
+        key: 'stu_system',
+        width: 120,
+        render: val => `${val}`,
+      },
+      {
+        title: '培养方式',
+        dataIndex: 'stu_cultivating_mode',
+        key: 'stu_cultivating_mode',
+        width: 120,
+        filters: filterCultivationModeChoice,
+        onFilter: (value, record) =>
+          record.stu_cultivating_mode === ServerCultivationModeChoice[value],
+        render: val => `${val}`,
+      },
+      {
+        title: '录取类型',
+        dataIndex: 'stu_enrollment_category',
+        key: 'stu_enrollment_category',
+        width: 120,
+        filters: filterEnrollmentCategory,
+        onFilter: (value, record) =>
+          record.stu_enrollment_category === ServerEnrollmentCategory[value],
+        render: val => `${val}`,
+      },
+      {
+        title: '国籍',
+        dataIndex: 'stu_nationality',
+        key: 'stu_nationality',
+        width: 120,
+        render: val => `${val}`,
+      },
+      {
+        title: '专项计划',
+        dataIndex: 'stu_special_program',
+        key: 'stu_special_program',
+        width: 400,
+        filters: filterSpecialProgramChoice,
+        onFilter: (value, record) =>
+          record.stu_special_program === ServerSpecialProgramChoice[value],
+        render: val => `${val}`,
+      },
+      {
+        title: '固定收入',
+        dataIndex: 'stu_is_regular_income',
+        width: 100,
+        render: value => <Badge status={value ? 'success' : 'error'} style={{ marginLeft: 5 }} />,
+      },
+      {
+        title: '欠缴学费',
+        dataIndex: 'stu_is_tuition_fees',
+        width: 100,
+        render: value => <Badge status={value ? 'success' : 'error'} style={{ marginLeft: 5 }} />,
+      },
+      {
+        title: '档案在校',
+        dataIndex: 'stu_is_archives',
+        width: 100,
+        render: value => <Badge status={value ? 'success' : 'error'} style={{ marginLeft: 5 }} />,
+      },
+      {
+        title: '入学时间',
+        dataIndex: 'stu_entrance_time',
+        key: 'stu_entrance_time',
+        sorter: (a, b) =>
+          moment(a.stu_entrance_time, 'YYYY-MM-DD').toDate() -
+          moment(b.stu_entrance_time, 'YYYY-MM-DD').toDate(),
+        render: val => `${val}`,
+      },
+      {
+        title: '毕业时间',
+        dataIndex: 'stu_graduation_time',
+        key: 'stu_graduation_time',
+        sorter: (a, b) =>
+          moment(a.stu_graduation_time, 'YYYY-MM-DD').toDate() -
+          moment(b.stu_graduation_time, 'YYYY-MM-DD').toDate(),
+        render: val => (val ? `${val}` : '-'),
+      },
+      {
+        title: '操作',
+        fixed: 'right',
+        key: 'uuid',
+        width: 60,
+        render: (val, record) => <a onClick={() => this.previewItem(record.uuid)}>详情</a>,
+      },
+    ];
+
     return (
-      <PageHeaderWrapper title="学生列表">
-        <Card bordered={false}>
-          <div className={styles.tableList}>
-            {displaySearch ? (
-              <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
-            ) : null}
-            <StandardTable
-              displayAlert={displayAlert}
-              displayRowsSelect={displayRowsSelect}
-              columns={this.studentColumns}
-              rowKey={record => record.stu_number}
-              dataSource={results}
-              selectedRows={selectedRows}
-              scroll={{ x: 4580, y: 900 }}
-              onSelectRow={this.handleSelectRows}
-              onChange={this.handleStandardTableChange}
-              total={count}
-              pagination={paginationProps}
-              loading={studentsLoading}
-            />
-          </div>
-        </Card>
-      </PageHeaderWrapper>
+      <div className={styles.tableList}>
+        {displaySearch ? (
+          <div className={styles.tableListForm}>{this.renderSimpleForm(studentColumns)}</div>
+        ) : null}
+        <StandardTable
+          displayAlert={displayAlert}
+          displayRowsSelect={displayRowsSelect}
+          columns={studentColumns}
+          rowKey={record => record.stu_number}
+          dataSource={results}
+          selectedRows={selectedRows}
+          scroll={{ x: 4580, y: 900 }}
+          onSelectRow={this.handleSelectRows}
+          onChange={this.handleStandardTableChange}
+          total={count}
+          pagination={paginationProps}
+          loading={studentsLoading}
+        />
+      </div>
     );
   }
 }

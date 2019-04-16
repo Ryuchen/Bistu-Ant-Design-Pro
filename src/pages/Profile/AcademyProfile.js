@@ -3,17 +3,15 @@ import { connect } from 'dva';
 import { Card, Table, Divider, Badge } from 'antd';
 import DescriptionList from '@/components/DescriptionList';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
-import router from 'umi/router';
 import styles from './AcademyProfile.less';
 import StudentTable from '@/components/StudentTable';
+import TeacherTable from '@/components/TeacherTable';
 
 const { Description } = DescriptionList;
 
-@connect(({ colleges, teachers, loading }) => ({
+@connect(({ colleges, loading }) => ({
   colleges,
-  teachers,
   majorsLoading: loading.effects['colleges/fetchAcademy'],
-  teachersLoading: loading.effects['teachers/fetchTeachers'],
 }))
 class AcademyProfile extends Component {
   componentDidMount() {
@@ -24,88 +22,16 @@ class AcademyProfile extends Component {
       type: 'colleges/fetchAcademy',
       payload: params.uuid || '1000000000',
     });
-
-    dispatch({
-      type: 'students/fetchStudents',
-      payload: {
-        academy: params.uuid,
-      },
-    });
-
-    dispatch({
-      type: 'teachers/fetchTeachers',
-      payload: {
-        academy: params.uuid,
-      },
-    });
   }
 
   render() {
     const {
       colleges: { academy },
-      teachers: { teachers },
+      match: { params },
       majorsLoading,
-      teachersLoading,
     } = this.props;
 
-    const { count: tutCount, results: tutResults = [] } = teachers;
     const { aca_user: acaUser = {} } = academy;
-
-    const teacherColumns = [
-      {
-        title: '教师编号',
-        dataIndex: 'tut_number',
-        render: val => `${val}`,
-      },
-      {
-        title: '教师姓名',
-        dataIndex: 'user.id',
-        key: 'user.id',
-        render: (val, record) => (
-          <a onClick={() => router.push(`/teachers/${record.uuid}`)}>
-            {record.user.first_name}
-            {record.user.last_name}
-          </a>
-        ),
-      },
-      {
-        title: '性别',
-        dataIndex: 'tut_gender',
-        render: val => `${val}`,
-      },
-      {
-        title: '政治面貌',
-        dataIndex: 'tut_political',
-        render: val => `${val}`,
-      },
-      {
-        title: '教师邮箱',
-        dataIndex: 'user.email',
-        render: val => `${val}`,
-      },
-      {
-        title: '教师电话',
-        dataIndex: 'tut_telephone',
-        width: 190,
-        render: val => `${val}`,
-      },
-      {
-        title: '入职日期',
-        dataIndex: 'tut_entry_day',
-        render: val => `${val}`,
-      },
-      {
-        title: '职称',
-        dataIndex: 'tut_title',
-        render: val => `${val}`,
-      },
-      {
-        title: '毕业院校',
-        dataIndex: 'education.edu_school_name',
-        render: val => `${val}`,
-      },
-    ];
-
     const majorColumns = [
       {
         title: '学科专业编号',
@@ -175,20 +101,17 @@ class AcademyProfile extends Component {
             pagination={false}
             loading={majorsLoading}
           />
-          <div className={styles.title}>教师列表 ({tutCount})</div>
-          <Table
-            style={{ marginBottom: 24 }}
-            rowKey={record => record.uuid}
-            columns={teacherColumns}
-            dataSource={tutResults}
-            pagination={false}
-            loading={teachersLoading}
+          <div className={styles.title}>教师列表</div>
+          <TeacherTable
+            displayAlert={false}
+            displaySearch={false}
+            defaultFilter={{ academy: params.uuid }}
           />
           <div className={styles.title}>学生列表</div>
           <StudentTable
             displayAlert={false}
             displaySearch={false}
-            defaultFilter={{ academy: academy.uuid }}
+            defaultFilter={{ academy: params.uuid }}
           />
         </Card>
       </PageHeaderWrapper>

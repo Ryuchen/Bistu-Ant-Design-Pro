@@ -1,8 +1,9 @@
 import React, { PureComponent } from 'react';
+import { stringify } from 'qs';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import moment from 'moment';
-import { Row, Col, Card, Avatar, Table, Select, Button } from 'antd';
+import { Row, Col, Card, Avatar, Table, Select, Button, notification } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Greeting from '@/components/Greeting';
 import styles from './Workplace.less';
@@ -65,14 +66,31 @@ class Workplace extends PureComponent {
   };
 
   handleExport = () => {
-    const { dispatch } = this.props;
     const { xlsYear } = this.state;
-    dispatch({
-      type: 'students/fetchTotalExcel',
-      payload: {
-        year: xlsYear,
-      },
-    });
+    const params = { year: xlsYear };
+    const downloadUrl = `/api/students/create_xls/?${stringify(params)}`;
+    fetch(downloadUrl, {
+      method: 'GET',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+    })
+      .then(res => res.blob())
+      .then(blob => {
+        const a = document.createElement('a');
+        const url = window.URL.createObjectURL(blob);
+        const filename = 'document.xls';
+        a.href = url;
+        a.download = filename;
+        a.click();
+        window.URL.revokeObjectURL(url);
+      })
+      .catch(error => {
+        notification.error({
+          message: '下载出现问题',
+          description: error,
+        });
+      });
   };
 
   render() {
