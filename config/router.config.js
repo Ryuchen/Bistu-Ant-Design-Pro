@@ -6,12 +6,12 @@ export default [
     routes: [
       {
         path: '/user',
-        redirect: '/user/login'
+        redirect: '/user/login',
       },
       {
         path: '/user/login',
         name: 'login',
-        component: './User/Login'
+        component: './User/Login',
       },
       {
         component: '404',
@@ -162,7 +162,7 @@ export default [
         name: 'settings',
         path: '/account/',
         component: './Account/Settings/Info',
-        authority: ['staff', 'teacher'],
+        authority: ['admin', 'staff', 'teacher'],
         routes: [
           {
             path: '/account/',

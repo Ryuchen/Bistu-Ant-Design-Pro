@@ -299,7 +299,7 @@ class StudentTable extends PureComponent {
               {selectedRows.length > 0 && (
                 <Button
                   style={{ marginLeft: 8 }}
-                  onClick={this.handleExportClick(studentColumns)}
+                  onClick={e => this.handleExportClick(studentColumns, e)}
                   size="small"
                 >
                   导出

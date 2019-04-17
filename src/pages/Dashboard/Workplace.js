@@ -3,9 +3,10 @@ import { stringify } from 'qs';
 import { connect } from 'dva';
 import Link from 'umi/link';
 import moment from 'moment';
-import { Row, Col, Card, Avatar, Table, Select, Button, notification } from 'antd';
+import { Avatar, Button, Card, Col, notification, Row, Select, Table } from 'antd';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import Greeting from '@/components/Greeting';
+
 import styles from './Workplace.less';
 
 @connect(({ user, colleges, students, loading }) => ({
@@ -16,9 +17,13 @@ import styles from './Workplace.less';
   statisticLoading: loading.effects['students/fetchStatistics'],
 }))
 class Workplace extends PureComponent {
-  state = {
-    xlsYear: moment().year(),
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      xlsYear: moment().year(),
+    };
+  }
 
   componentDidMount() {
     const { dispatch } = this.props;
@@ -134,6 +139,29 @@ class Workplace extends PureComponent {
         </div>
       </div>
     );
+
+    const dataSource = [];
+    statistics.forEach(item => {
+      const {
+        academy_name: academyName,
+        academy_total: academyTotal,
+        academy_major: academyMajors = [],
+      } = item;
+
+      academyMajors.forEach(major => {
+        dataSource.push({
+          academyName,
+          academyTotal,
+          majorName: major.major_name,
+          majorCode: major.major_code,
+          majorType: major.major_type,
+          majorTotal: major.major_total,
+          S1: major.S1,
+          S2: major.S2,
+        });
+      });
+    });
+
     const temp = {}; // 当前重复的值,支持多列
     const mergeCells = (index, text, array, columnName) => {
       let i = 0;
@@ -155,7 +183,7 @@ class Workplace extends PureComponent {
     const columns = [
       {
         title: '学院名称',
-        dataIndex: 'name',
+        dataIndex: 'academyName',
         width: 140,
         fixed: 'left',
         render: (text, record, index) => {
@@ -163,19 +191,19 @@ class Workplace extends PureComponent {
             children: text,
             props: {},
           };
-          obj.props.rowSpan = mergeCells(index, record.name, statistics, 'name');
+          obj.props.rowSpan = mergeCells(index, record.academyName, dataSource, 'academyName');
           return obj;
         },
       },
       {
         title: '招生专业代码',
-        dataIndex: 'major.maj_code',
+        dataIndex: 'majorCode',
         width: 120,
         fixed: 'left',
       },
       {
         title: '招生专业名称',
-        dataIndex: 'major.name',
+        dataIndex: 'majorName',
         width: 210,
         fixed: 'left',
       },
@@ -184,7 +212,7 @@ class Workplace extends PureComponent {
         children: [
           {
             title: '专业人数',
-            dataIndex: 'major.count',
+            dataIndex: 'majorTotal',
             width: 40,
             align: 'center',
           },
@@ -193,7 +221,7 @@ class Workplace extends PureComponent {
             children: [
               {
                 title: '总计',
-                dataIndex: '11',
+                dataIndex: 'S1.C2.count',
                 width: 40,
                 align: 'center',
               },
@@ -202,25 +230,25 @@ class Workplace extends PureComponent {
                 children: [
                   {
                     title: '第一志愿生',
-                    dataIndex: '0',
+                    dataIndex: 'S1.C2.stu_is_volunteer',
                     width: 120,
                     align: 'center',
                   },
                   {
                     title: '调剂生',
-                    dataIndex: '1',
+                    dataIndex: 'S1.C2.stu_is_adjust',
                     width: 100,
                     align: 'center',
                   },
                   {
                     title: '推免生',
-                    dataIndex: '2',
+                    dataIndex: 'S1.C2.stu_is_exemption',
                     width: 100,
                     align: 'center',
                   },
                   {
                     title: '退役大学生',
-                    dataIndex: '3',
+                    dataIndex: 'S1.C2.stu_special_program',
                     width: 120,
                     align: 'center',
                   },
@@ -228,7 +256,7 @@ class Workplace extends PureComponent {
               },
               {
                 title: '总计',
-                dataIndex: '12',
+                dataIndex: 'S1.C1.count',
                 width: 40,
                 align: 'center',
               },
@@ -237,25 +265,25 @@ class Workplace extends PureComponent {
                 children: [
                   {
                     title: '第一志愿生',
-                    dataIndex: '4',
+                    dataIndex: 'S1.C1.stu_is_volunteer',
                     width: 120,
                     align: 'center',
                   },
                   {
                     title: '调剂生',
-                    dataIndex: '5',
+                    dataIndex: 'S1.C1.stu_is_adjust',
                     width: 100,
                     align: 'center',
                   },
                   {
                     title: '推免生',
-                    dataIndex: '6',
+                    dataIndex: 'S1.C1.stu_is_exemption',
                     width: 100,
                     align: 'center',
                   },
                   {
                     title: '退役大学生',
-                    dataIndex: '7',
+                    dataIndex: 'S1.C1.stu_special_program',
                     width: 120,
                     align: 'center',
                   },
@@ -268,7 +296,7 @@ class Workplace extends PureComponent {
             children: [
               {
                 title: '总计',
-                dataIndex: '13',
+                dataIndex: 'S2.C1.count',
                 width: 40,
                 align: 'center',
               },
@@ -277,19 +305,19 @@ class Workplace extends PureComponent {
                 children: [
                   {
                     title: '第一志愿生',
-                    dataIndex: '8',
+                    dataIndex: 'S2.C1.stu_is_volunteer',
                     width: 120,
                     align: 'center',
                   },
                   {
                     title: '调剂生',
-                    dataIndex: '9',
+                    dataIndex: 'S2.C1.stu_is_adjust',
                     width: 100,
                     align: 'center',
                   },
                   {
                     title: '退役大学生',
-                    dataIndex: '10',
+                    dataIndex: 'S2.C1.stu_special_program',
                     width: 120,
                     align: 'center',
                   },
@@ -301,7 +329,7 @@ class Workplace extends PureComponent {
       },
       {
         title: '总数',
-        dataIndex: 'count',
+        dataIndex: 'academyTotal',
         width: 60,
         align: 'center',
         fixed: 'right',
@@ -310,7 +338,7 @@ class Workplace extends PureComponent {
             children: text,
             props: {},
           };
-          obj.props.rowSpan = mergeCells(index, record.name, statistics, 'name');
+          obj.props.rowSpan = mergeCells(index, record.academyName, dataSource, 'academyName');
           return obj;
         },
       },
@@ -367,8 +395,8 @@ class Workplace extends PureComponent {
             >
               <Table
                 columns={columns}
-                dataSource={statistics}
-                rowKey={record => record.code}
+                dataSource={dataSource}
+                rowKey={record => record.index}
                 loading={statisticLoading}
                 bordered
                 size="small"
