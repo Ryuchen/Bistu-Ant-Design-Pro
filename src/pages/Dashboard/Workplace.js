@@ -348,6 +348,7 @@ class Workplace extends PureComponent {
     for (let i = moment().year() - 10; i <= moment().year(); i += 1) {
       selectOptions.push(i);
     }
+
     return (
       <PageHeaderWrapper
         title="北京信息科技大学"
@@ -427,6 +428,11 @@ class Workplace extends PureComponent {
                     />
                     <div className={styles.projectItemContent}>
                       <a href={item.aca_href}>访问官网: {item.aca_href}</a>
+                      {item.student_count && (
+                        <span className={styles.datetime} title={item.student_count}>
+                          {`学院人数：${item.student_count}`}
+                        </span>
+                      )}
                     </div>
                   </Card>
                 </Card.Grid>

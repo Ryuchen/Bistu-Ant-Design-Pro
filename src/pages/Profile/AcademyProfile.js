@@ -68,6 +68,11 @@ class AcademyProfile extends Component {
         dataIndex: 'maj_second',
         render: value => <Badge status={value ? 'success' : 'error'} style={{ marginLeft: 5 }} />,
       },
+      {
+        title: '学科人数',
+        dataIndex: 'student_count',
+        render: val => `${val}`,
+      },
     ];
 
     return (
