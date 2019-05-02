@@ -26,16 +26,14 @@ class Greeting extends Component {
   };
 
   render() {
-    const {
-      currentUser: { name },
-    } = this.props;
+    const { currentUser } = this.props;
 
-    const firstUpperCase = ([first, ...rest]) => first.toUpperCase() + rest.join('');
+    const { name } = currentUser;
 
     return (
       <span>
         {' '}
-        {this.renderGreeting()} {firstUpperCase(name)} ，祝你开心每一天！
+        {this.renderGreeting()} {name} ，祝你开心每一天！
       </span>
     );
   }

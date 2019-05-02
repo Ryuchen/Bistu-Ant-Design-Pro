@@ -1,7 +1,7 @@
 import { routerRedux } from 'dva/router';
 import { stringify } from 'qs';
 import { AccountLogin, AccountLogout } from '@/services/bistu';
-import { setAuthority } from '@/utils/authority';
+import { setAuthority, setPermission } from '@/utils/authority';
 import { getPageQuery } from '@/utils/utils';
 import { reloadAuthorized } from '@/utils/Authorized';
 
@@ -50,7 +50,8 @@ export default {
           payload: {
             status: false,
             data: {
-              currentAuthority: 'guest',
+              authority: undefined,
+              permission: undefined,
             },
           },
         });
@@ -75,7 +76,8 @@ export default {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.data.currentAuthority);
+      setAuthority(payload.data.authority);
+      setPermission(payload.data.permission);
       return {
         ...state,
         status: payload.status,

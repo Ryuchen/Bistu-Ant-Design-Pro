@@ -37,8 +37,8 @@ export default {
         payload: response,
       });
     },
-    *fetchMajors(_, { call, put }) {
-      const response = yield call(queryMajors);
+    *fetchMajors({ payload }, { call, put }) {
+      const response = yield call(queryMajors, payload);
       yield put({
         type: 'saveMajors',
         payload: response,

@@ -1,17 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Table, Divider, Badge } from 'antd';
+import { Card, Divider } from 'antd';
 import DescriptionList from '@/components/DescriptionList';
 import PageHeaderWrapper from '@/components/PageHeaderWrapper';
 import styles from './AcademyProfile.less';
+import MajorTable from '@/components/MajorTable';
 import StudentTable from '@/components/StudentTable';
 import TeacherTable from '@/components/TeacherTable';
 
 const { Description } = DescriptionList;
 
-@connect(({ colleges, loading }) => ({
+@connect(({ colleges }) => ({
   colleges,
-  majorsLoading: loading.effects['colleges/fetchAcademy'],
 }))
 class AcademyProfile extends Component {
   componentDidMount() {
@@ -28,52 +28,9 @@ class AcademyProfile extends Component {
     const {
       colleges: { academy },
       match: { params },
-      majorsLoading,
     } = this.props;
 
     const { aca_user: acaUser = {} } = academy;
-    const majorColumns = [
-      {
-        title: '学科专业编号',
-        dataIndex: 'maj_code',
-        render: val => `${val}`,
-      },
-      {
-        title: '专业方向名称',
-        dataIndex: 'maj_name',
-        render: val => `${val}`,
-      },
-      {
-        title: '类型',
-        dataIndex: 'maj_type',
-        render: val => `${val}`,
-      },
-      {
-        title: '开设时间',
-        dataIndex: 'maj_setup_time',
-        render: val => `${val}`,
-      },
-      {
-        title: '学位类型',
-        dataIndex: 'maj_degree',
-        render: val => `${val}`,
-      },
-      {
-        title: '一级学科',
-        dataIndex: 'maj_first',
-        render: value => <Badge status={value ? 'success' : 'error'} style={{ marginLeft: 5 }} />,
-      },
-      {
-        title: '二级学科',
-        dataIndex: 'maj_second',
-        render: value => <Badge status={value ? 'success' : 'error'} style={{ marginLeft: 5 }} />,
-      },
-      {
-        title: '学科人数',
-        dataIndex: 'student_count',
-        render: val => `${val}`,
-      },
-    ];
 
     return (
       <PageHeaderWrapper title={academy.aca_cname}>
@@ -98,14 +55,7 @@ class AcademyProfile extends Component {
           </DescriptionList>
           <Divider style={{ marginBottom: 32 }} />
           <div className={styles.title}>专业列表</div>
-          <Table
-            style={{ marginBottom: 24 }}
-            rowKey={record => record.uuid}
-            columns={majorColumns}
-            dataSource={academy.majors}
-            pagination={false}
-            loading={majorsLoading}
-          />
+          <MajorTable defaultFilter={{ academy: params.uuid }} />
           <div className={styles.title}>教师列表</div>
           <TeacherTable
             displayAlert={false}

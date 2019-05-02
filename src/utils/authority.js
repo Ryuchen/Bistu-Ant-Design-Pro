@@ -1,24 +1,38 @@
-// use localStorage to store the authority info, which might be sent from server in actual project.
-export function getAuthority(str) {
-  // return localStorage.getItem('antd-pro-authority') || ['admin', 'user'];
-  const authorityString =
-    typeof str === 'undefined' ? localStorage.getItem('bistu-authority') : str;
-  // authorityString could be admin, "admin", ["admin"]
+export function getAuthority() {
+  const authorityString = localStorage.getItem('authority');
+
   let authority;
+
   try {
     authority = JSON.parse(authorityString);
   } catch (e) {
     authority = authorityString;
   }
+
   if (typeof authority === 'string') {
     return [authority];
   }
-  if (!authority && APP_TYPE === 'site') {
-    return ['admin'];
-  }
+
   return authority;
 }
+
+export function getPermission(per) {
+  const permissionString = localStorage.getItem('permission');
+
+  try {
+    const permissions = JSON.parse(permissionString);
+    return !!permissions.includes(per);
+  } catch (e) {
+    return false;
+  }
+}
+
 export function setAuthority(authority) {
-  const proAuthority = typeof authority === 'string' ? [authority] : authority;
-  return localStorage.setItem('bistu-authority', JSON.stringify(proAuthority));
+  const Authority = typeof authority === 'string' ? [authority] : authority;
+  return localStorage.setItem('authority', JSON.stringify(Authority));
+}
+
+export function setPermission(permission) {
+  const Permission = typeof permission === 'string' ? [permission] : permission;
+  return localStorage.setItem('permission', JSON.stringify(Permission));
 }

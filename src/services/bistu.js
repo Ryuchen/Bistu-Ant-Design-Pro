@@ -42,7 +42,7 @@ export async function queryAcademyProfile(uuid) {
 }
 
 export async function queryMajors() {
-  return request('/api/colleges/majors/', {
+  return request(`/api/colleges/majors/`, {
     method: 'GET',
   });
 }
