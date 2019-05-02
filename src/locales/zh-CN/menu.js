@@ -11,6 +11,7 @@ export default {
   'menu.form.stepform.confirm': '分步表单（确认转账信息）',
   'menu.form.stepform.result': '分步表单（完成）',
   'menu.form.advancedform': '高级表单',
+  'menu.enrollStudent': '招生详情',
   'menu.studentTable': '学生列表',
   'menu.tutorTable': '教师列表',
   'menu.collegeTable': '学院列表',

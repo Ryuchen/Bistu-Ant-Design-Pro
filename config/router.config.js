@@ -33,13 +33,6 @@ export default [
         authority: ['superuser', 'staff', 'teacher'],
         hideInMenu: true,
       },
-      // 研究生招生信息
-      {
-        path: '/enroll',
-        name: 'enrollStudent',
-        component: './Enroll/EnrollStudent',
-        authority: ['superuser', 'staff'],
-      },
       // 学院的详细信息
       {
         path: '/colleges/:uuid',
@@ -47,6 +40,13 @@ export default [
         component: './Profile/AcademyProfile',
         authority: ['superuser', 'staff', 'teacher'],
         hideInMenu: true,
+      },
+      // 研究生招生信息
+      {
+        path: '/enroll',
+        name: 'enrollStudent',
+        component: './Enroll/EnrollStudent',
+        authority: ['superuser', 'staff'],
       },
       // list
       {
