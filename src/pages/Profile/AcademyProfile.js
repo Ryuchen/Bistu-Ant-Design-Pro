@@ -60,13 +60,13 @@ class AcademyProfile extends Component {
           <TeacherTable
             displayAlert={false}
             displaySearch={false}
-            defaultFilter={{ academy: params.uuid }}
+            defaultFilter={{ tut_academy: params.uuid }}
           />
           <div className={styles.title}>学生列表</div>
           <StudentTable
             displayAlert={false}
             displaySearch={false}
-            defaultFilter={{ academy: params.uuid }}
+            defaultFilter={{ stu_academy: params.uuid }}
           />
         </Card>
       </PageHeaderWrapper>

@@ -325,16 +325,11 @@ class TeacherTable extends PureComponent {
       },
       {
         title: '教师姓名',
-        dataIndex: 'user.id',
+        dataIndex: 'tut_name',
         key: 'user.id',
         fixed: 'left',
         width: 100,
-        render: (val, record) => (
-          <a onClick={() => this.previewItem(record.uuid)}>
-            {record.user.first_name}
-            {record.user.last_name}
-          </a>
-        ),
+        render: (val, record) => <a onClick={() => this.previewItem(record.uuid)}>{val}</a>,
       },
       {
         title: '性别',
@@ -362,13 +357,13 @@ class TeacherTable extends PureComponent {
       },
       {
         title: '所属学院',
-        dataIndex: 'academy',
+        dataIndex: 'tut_academy',
         width: 190,
         render: val => <a onClick={() => router.push(`/colleges/${val.uuid}`)}>{val.aca_cname}</a>,
       },
       {
         title: '教师邮箱',
-        dataIndex: 'user.email',
+        dataIndex: 'tut_user.email',
         width: 230,
         render: val => `${val}`,
       },
@@ -387,7 +382,7 @@ class TeacherTable extends PureComponent {
       {
         title: '毕业院校',
         width: 220,
-        dataIndex: 'education.edu_school_name',
+        dataIndex: 'tut_education.edu_school_name',
         render: val => `${val}`,
       },
       {

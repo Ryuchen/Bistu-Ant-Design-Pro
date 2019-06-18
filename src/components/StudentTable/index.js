@@ -224,9 +224,6 @@ class StudentTable extends PureComponent {
     const props = {
       name: 'file',
       action: '/api/students/students/',
-      headers: {
-        'X-CSRFToken': this.getCookie('csrftoken'),
-      },
       showUploadList: false,
       onChange(info) {
         if (info.file.status === 'done') {
@@ -338,6 +335,7 @@ class StudentTable extends PureComponent {
         })
       )
     );
+
     const source = Array.from(
       new Set(
         results.map(item => {
@@ -416,16 +414,11 @@ class StudentTable extends PureComponent {
     const studentColumns = [
       {
         title: '姓名',
-        dataIndex: 'user.username',
-        key: 'user.username',
+        dataIndex: 'stu_name',
+        key: 'stu_name',
         fixed: 'left',
         width: 100,
-        render: (val, record) => (
-          <a onClick={() => this.previewItem(record.uuid)}>
-            {record.user.first_name}
-            {record.user.last_name}
-          </a>
-        ),
+        render: (val, record) => <a onClick={() => this.previewItem(record.uuid)}>{val}</a>,
       },
       {
         title: '学号',
@@ -517,19 +510,19 @@ class StudentTable extends PureComponent {
       },
       {
         title: '学院',
-        dataIndex: 'academy.aca_cname',
+        dataIndex: 'stu_academy.aca_cname',
         width: 160,
         render: val => `${val}`,
       },
       {
         title: '专业',
-        dataIndex: 'major.maj_name',
+        dataIndex: 'stu_major.maj_name',
         width: 160,
         render: val => `${val}`,
       },
       {
         title: '学科类型',
-        dataIndex: 'major.maj_type',
+        dataIndex: 'stu_major.maj_type',
         width: 160,
         filters: filterMajorTypeChoice,
         onFilter: (value, record) => record.major.maj_type === ServerMajorTypeChoice[value],
@@ -539,7 +532,7 @@ class StudentTable extends PureComponent {
         title: '所属班级',
         dataIndex: 'stu_class',
         width: 160,
-        render: val => `${val}`,
+        render: val => (val ? `${val.cla_name}${val.cla_code}` : '-'),
       },
       {
         title: '状态',

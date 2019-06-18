@@ -292,7 +292,7 @@ class EnrollStudent extends PureComponent {
     }
 
     return (
-      <PageHeaderWrapper title="硕士生招生信息">
+      <PageHeaderWrapper title="硕士生招生信息" type="success">
         <Row gutter={24}>
           <Col xl={24} lg={24} md={24} sm={24} xs={24}>
             <Select
@@ -327,8 +327,7 @@ class EnrollStudent extends PureComponent {
               className={styles.projectList}
               style={{ marginBottom: 24 }}
               title="硕士生分专业招生人数汇总表"
-              bordered={false}
-              bodyStyle={{ padding: 0 }}
+              bodyStyle={{ padding: 20 }}
             >
               <Table
                 columns={columns}
@@ -338,7 +337,7 @@ class EnrollStudent extends PureComponent {
                 bordered
                 size="small"
                 pagination={false}
-                scroll={{ x: 1910, y: 600 }}
+                scroll={{ x: 1910, y: 900 }}
               />
             </Card>
           </Col>
